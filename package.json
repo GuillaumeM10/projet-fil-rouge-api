@@ -1,0 +1,30 @@
+{
+  "name": "projet-fil-rouge-api",
+  "description": "",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "start:dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GuillaumeM10/Projet-Fil-Rouge-api.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^6.10.0",
+    "nodemailer": "^6.9.1",
+    "nodemon": "^2.0.20"
+  },
+  "bugs": {
+    "url": "https://github.com/GuillaumeM10/Projet-Fil-Rouge-api/issues"
+  },
+  "homepage": "https://github.com/GuillaumeM10/Projet-Fil-Rouge-api#readme"
+}
