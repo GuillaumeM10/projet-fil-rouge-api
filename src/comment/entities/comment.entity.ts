@@ -13,9 +13,9 @@ export class CommentEntity extends Timestamp{
   })
   content: string
 
-  @ManyToOne(() => UserEntity, user => user.comments)
-  user: UserEntity
+  // @ManyToOne(() => UserEntity, user => user.comments)
+  // user: UserEntity
 
-  @ManyToOne(() => PostEntity, post => post.comments)
-  post: PostEntity
+  // @ManyToOne(() => PostEntity, post => post.comments)
+  // post: PostEntity
 }

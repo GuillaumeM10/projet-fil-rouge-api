@@ -4,13 +4,17 @@ import { AppService } from './app.service';
 import { PostModule } from './post/post.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { CategoryModule } from './category/category.module';
-import { UserModule } from './user/user.module';
-import { CommentModule } from './comment/comment.module';
 import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
+import { UserDetailModule } from './user-detail/user-detail.module';
+import { CommentModule } from './comment/comment.module';
 import { SkillModule } from './skill/skill.module';
 import { LinkModule } from './link/link.module';
 import { FileModule } from './file/file.module';
+import { ExperienceModule } from './experience/experience.module';
+import { LinkCategoryModule } from './link-category/link-category.module';
+import { CityModule } from './city/city.module';
+import { ReplyModule } from './reply/reply.module';
 
 @Module({
   imports: [
@@ -26,14 +30,18 @@ import { FileModule } from './file/file.module';
       synchronize: true,
       autoLoadEntities: true,
     }),
-    PostModule,
-    CategoryModule,
-    UserModule,
-    CommentModule,
     AuthModule,
-    SkillModule,
-    LinkModule,
-    FileModule,
+    UserModule,
+    UserDetailModule,
+    PostModule,
+    // CommentModule,
+    // SkillModule,
+    // LinkModule,
+    // FileModule,
+    // ExperienceModule,
+    // LinkCategoryModule,
+    // CityModule,
+    // ReplyModule,
   ],
   controllers: [AppController],
   providers: [AppService],

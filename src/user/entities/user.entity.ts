@@ -1,7 +1,8 @@
 import { CommentEntity } from "src/comment/entities/comment.entity";
 import { Timestamp } from "src/Generic/timestamp.entity";
 import { PostEntity } from "src/post/entity/post.entity";
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { UserDetailEntity } from "src/user-detail/entities/user-detail.entity";
+import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity("user")
 export class UserEntity extends Timestamp{
@@ -29,10 +30,23 @@ export class UserEntity extends Timestamp{
   })
   lastName: string
 
-  @OneToMany(() => PostEntity, post => post.user)
+  @Column({
+    nullable: true,
+    unique: false,
+    default: "user"
+  })
+  role: string
+
+  @OneToOne(() => UserDetailEntity, userDetail => userDetail.user, {
+    cascade: ["insert"]
+  })
+  @JoinColumn()
+  userDetail: UserDetailEntity
+
+  @OneToMany(() => PostEntity, post => post.author)
   posts: PostEntity[]
   
-  @OneToMany(() => CommentEntity, comment => comment.user)
-  comments: CommentEntity[]
+  // @OneToMany(() => CommentEntity, comment => comment.user)
+  // comments: CommentEntity[]
 
 }

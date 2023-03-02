@@ -1,6 +1,5 @@
 import { Timestamp } from "src/Generic/timestamp.entity";
-import { PostEntity } from "src/post/entity/post.entity";
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('category')
 export class CategoryEntity extends Timestamp {
@@ -12,7 +11,4 @@ export class CategoryEntity extends Timestamp {
         unique: true
     })
     name: string;
-
-    @ManyToMany(() => PostEntity, post => post.categories)
-    posts: PostEntity[];
 }

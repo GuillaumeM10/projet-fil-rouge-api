@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UserDetailService } from 'src/user-detail/user-detail.service';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -11,7 +12,8 @@ const salt = 10;
 export class UserService {
   constructor(
     @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>
+    private readonly userRepository: Repository<UserEntity>,
+    private userDetailService: UserDetailService,
   ){}
 
   async create(createUserDto: CreateUserDto) {
@@ -30,7 +32,12 @@ export class UserService {
   }
 
   async findOne(id: number) {
-    const user = await this.userRepository.findOneBy({ id });
+    // const user = await this.userRepository.findOneBy({ id });
+    const user = await this.userRepository
+                    .createQueryBuilder('user')
+                    .leftJoinAndSelect('user.userDetail', 'userDetail')
+                    .where('user.id = :id', { id })
+                    .getOne();
     if(user === null){
       throw new NotFoundException(`User #${id} not found`);
     }
@@ -61,6 +68,18 @@ export class UserService {
   }
 
   async remove(id: number) {
-    return await this.userRepository.softDelete(id);
+    console.log('id', id);
+    
+    const user = await this.findOne(id);
+    if(user.userDetail){
+      await this.userDetailService.remove(user.userDetail.id);
+    }
+    const userToRemove = await this.userRepository.softDelete(id);
+
+    if (!userToRemove) {
+      throw new NotFoundException(`User #${id} not found`);
+    }
+
+    return { message: `User #${id} deleted`};
   }
 }

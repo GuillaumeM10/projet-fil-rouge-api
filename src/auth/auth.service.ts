@@ -24,7 +24,7 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
-    const payload = { email: user.email, id: user.id }; // informations stoked in the token
+    const payload = { email: user.email, id: user.id, role: user.role }; // informations stoked in the token
     return {
       access_token: this.generateJwtToken(payload),
     }
