@@ -15,6 +15,7 @@ import { ExperienceModule } from './experience/experience.module';
 import { LinkCategoryModule } from './link-category/link-category.module';
 import { CityModule } from './city/city.module';
 import { ReplyModule } from './reply/reply.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { ReplyModule } from './reply/reply.module';
     UserModule,
     UserDetailModule,
     PostModule,
+    MailModule,
     // CommentModule,
     // SkillModule,
     // LinkModule,

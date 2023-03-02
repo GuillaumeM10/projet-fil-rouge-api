@@ -4,16 +4,24 @@ import { SignupAuthDto } from './dto/signup-auth.dto';
 import { UserService } from 'src/user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UserService,
     private readonly jwtService: JwtService,
+    private mailService: MailService
   ) {}
 
   async signup(signupAuthDto: SignupAuthDto) {
-    return this.usersService.create(signupAuthDto);
+    const user = await this.usersService.create(signupAuthDto);
+
+    if(user.email){
+      const mailToken = Math.floor(1000 + Math.random() * 9000).toString();
+      await this.mailService.sendUserConfirmation(user, mailToken);
+    }
+    return user
   }
 
   async signin(signinAuthDto: SigninAuthDto) {
