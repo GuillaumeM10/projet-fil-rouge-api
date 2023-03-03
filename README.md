@@ -1,16 +1,16 @@
-https://img.shields.io/badge/Node.js-12.16.1-green
-https://img.shields.io/badge/NestJS-7.0.0-green
-https://img.shields.io/badge/TypeScript-3.9.7-green
-https://img.shields.io/badge/PostgreSQL-12.2-green
-https://img.shields.io/badge/Docker-19.03.8-green
-https://img.shields.io/badge/Docker%20Compose-1.25.5-green
-https://img.shields.io/badge/TypeORM-0.2.24-green
-https://img.shields.io/badge/Passport-0.4.1-green
-https://img.shields.io/badge/Passport%20JWT-4.0.0-green
-https://img.shields.io/badge/Passport%20Local-1.0.0-green
-https://img.shields.io/badge/Passport%20Github-1.1.0-green
+[![Node.js](https://img.shields.io/badge/Node.js-12.16.1-pink)](https://nodejs.org/en/)
+[![NestJS](https://img.shields.io/badge/NestJS-7.0.0-blue)](https://nestjs.com/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-3.9.7-red)](https://www.typescriptlang.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-12.2-purple)](https://www.postgresql.org/)
+[![Docker](https://img.shields.io/badge/Docker-19.03.8-grey)](https://www.docker.com/)
+[![Docker Compose](https://img.shields.io/badge/Docker%20Compose-1.25.5-green)](https://docs.docker.com/compose/)
+[![TypeORM](https://img.shields.io/badge/TypeORM-0.2.24-cyan)](https://typeorm.io/#/)
+[![Passport](https://img.shields.io/badge/Passport-0.4.1-black)](http://www.passportjs.org/)
+[![Passport JWT](https://img.shields.io/badge/Passport%20JWT-4.0.0-magenta)](
 
 
+## DB Diagram
+https://dbdiagram.io/d/637f85c2c9abfc6111750636
 ## Installation
 
 ```bash
