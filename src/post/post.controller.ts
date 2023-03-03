@@ -13,7 +13,6 @@ export class PostController {
   getAllPosts(
     @Query() queries
   ) {
-    console.log(queries)
     return this.postService.getAllPosts(queries)
   }
 

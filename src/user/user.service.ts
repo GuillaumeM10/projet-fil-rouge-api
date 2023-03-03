@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserDetailService } from 'src/user-detail/user-detail.service';
 import { Repository } from 'typeorm';
@@ -23,7 +23,9 @@ export class UserService {
       const newUser = await this.userRepository.save(user)
       return newUser
     }catch(err) {
-      return err['detail']
+      // const error = { "error" : err['detail'] }
+      // return error
+      throw new ConflictException('Cette adresse email est déjà utilisée');
     }
   }
 
@@ -67,9 +69,7 @@ export class UserService {
     return userUpdate;
   }
 
-  async remove(id: number) {
-    console.log('id', id);
-    
+  async remove(id: number) {    
     const user = await this.findOne(id);
     if(user.userDetail){
       await this.userDetailService.remove(user.userDetail.id);

@@ -13,21 +13,27 @@ export class PostService {
     ) {}
 
     async getAllPosts(queries) {
-        let { page, limit, categories } = queries;
+        let { page, limit, categories, author } = queries;
 
         limit = limit ? +limit : 10;
         page = page ? +page : 1;
 
         const query = await this.postRepository
             .createQueryBuilder('post')
-            .leftJoinAndSelect('post.categories', 'categories')
-            .leftJoinAndSelect('post.user', 'user')
-            .select(['post.id', 'post.title', 'post.description', 'post.city', 'post.published', 'post.updatedAt', 'post.createdAt', 'user.firstName', 'user.lastName', 'categories.name', 'categories.id'])
+            // .leftJoinAndSelect('post.categories', 'categories')
+            .leftJoinAndSelect('post.author', 'author')
+            // .select(['post.id', 'post.title', 'post.description', 'post.city', 'post.published', 'post.updatedAt', 'post.createdAt', 'user.firstName', 'user.lastName', 'categories.name', 'categories.id'])
+            .select(['post.id', 'post.content', 'post.published', 'post.updatedAt', 'post.createdAt', 'author.firstName', 'author.lastName'])
 
 
-        if(categories !== undefined) {
+        // if(categories !== undefined) {
+        //     query
+        //         .where('categories.name IN (:...categories)', { categories: categories.split(',') })
+        // }
+        
+        if(author !== undefined) {
             query
-                .where('categories.name IN (:...categories)', { categories: categories.split(',') })
+                .where('author.id = :author', { author })
         }
 
         const postList = query
