@@ -34,7 +34,7 @@ export class AuthService {
 
     const payload = { email: user.email, id: user.id, role: user.role }; // informations stoked in the token
     return {
-      access_token: this.generateJwtToken(payload),
+      accessToken: this.generateJwtToken(payload),
     }
   }
 
