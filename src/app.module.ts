@@ -16,6 +16,7 @@ import { LinkCategoryModule } from './link-category/link-category.module';
 import { CityModule } from './city/city.module';
 import { ReplyModule } from './reply/reply.module';
 import { MailModule } from './mail/mail.module';
+import { TokenResetPasswordModule } from './token-reset-password/token-reset-password.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { MailModule } from './mail/mail.module';
     UserDetailModule,
     PostModule,
     MailModule,
+    TokenResetPasswordModule,
     // CommentModule,
     // SkillModule,
     // LinkModule,

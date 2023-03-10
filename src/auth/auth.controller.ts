@@ -17,8 +17,4 @@ export class AuthController {
     return this.authService.signin(signinAuthDto);
   }
 
-  // router.post('/forgot-password', AuthController.forgotPassword);
-  // router.post('/reset-password/:id', AuthController.resetPassword);
-
-  
 }
