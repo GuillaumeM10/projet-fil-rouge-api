@@ -16,4 +16,9 @@ export class AuthController {
   signin(@Body() signinAuthDto: SigninAuthDto) {
     return this.authService.signin(signinAuthDto);
   }
+
+  // router.post('/forgot-password', AuthController.forgotPassword);
+  // router.post('/reset-password/:id', AuthController.resetPassword);
+
+  
 }
