@@ -3,12 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserService } from 'src/user/user.service';
 import { CreateTokenResetPasswordDto } from './dto/create-token-reset-password.dto';
 import { TokenResetPasswordEntity } from './entities/token-reset-password.entity';
+import { v4 as uuidv4 } from 'uuid';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class TokenResetPasswordService {
   constructor(
     @InjectRepository(TokenResetPasswordEntity)
-    private readonly tokenResetPasswordRepository: TokenResetPasswordEntity,
+    private readonly tokenResetPasswordRepository: Repository<TokenResetPasswordEntity>,
     private usersService: UserService,
   ) {}
 
@@ -39,7 +41,7 @@ export class TokenResetPasswordService {
   }
 
   async findOneByEmail(email: string) {
-    const findUser = await this.usersService.findOne(email);
+    const findUser = await this.usersService.findOneByEmail(email);
 
     if (!findUser) {
       throw new HttpException('User not found', 400);

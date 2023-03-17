@@ -69,6 +69,21 @@ export class UserService {
     return userUpdate;
   }
 
+  async updatePassword(password: string, updateUserDto: UpdateUserDto) {
+    const user = await this.findOneByEmail(updateUserDto.email);
+
+    if (!user) {
+      throw new NotFoundException(`User ${updateUserDto.email} not found`);
+    }
+
+    const userUpdate = { ...user, ...updateUserDto };
+    userUpdate.password = bcrypt.hashSync(password, salt)
+
+    await this.userRepository.save(userUpdate);
+
+    return userUpdate;
+  }
+
   async remove(id: number) {    
     const user = await this.findOne(id);
     if(user.userDetail){

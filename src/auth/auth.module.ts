@@ -6,6 +6,11 @@ import { JwtStrategy } from './strategy/passport-jwt.strategy';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { MailModule } from 'src/mail/mail.module';
+import { UserEntity } from 'src/user/entities/user.entity';
+import { TokenResetPasswordEntity } from 'src/token-reset-password/entities/token-reset-password.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { MailService } from 'src/mail/mail.service';
+import { TokenResetPasswordService } from 'src/token-reset-password/token-reset-password.service';
 
 @Module({
   imports: [
@@ -15,10 +20,11 @@ import { MailModule } from 'src/mail/mail.module';
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '86400s' },
     }),
-    MailModule
+    MailModule,
+    TypeOrmModule.forFeature([UserEntity, TokenResetPasswordEntity]),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, JwtStrategy, TokenResetPasswordService, MailService],
   // exports: [AuthService]
 })
 export class AuthModule {}
