@@ -17,6 +17,7 @@ import { CityModule } from './city/city.module';
 import { ReplyModule } from './reply/reply.module';
 import { MailModule } from './mail/mail.module';
 import { TokenResetPasswordModule } from './token-reset-password/token-reset-password.module';
+import { UploadFileModule } from './upload-file/upload-file.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { TokenResetPasswordModule } from './token-reset-password/token-reset-pas
     PostModule,
     MailModule,
     TokenResetPasswordModule,
+    UploadFileModule,
     // CommentModule,
     // SkillModule,
     // LinkModule,

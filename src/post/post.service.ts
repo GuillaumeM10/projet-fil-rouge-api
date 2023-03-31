@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UploadFileService } from 'src/upload-file/upload-file.service';
 import { Repository } from 'typeorm';
 import { PostCreateDto } from './dto/post-create.dto';
 import { PostUpdateDto } from './dto/post-update.dto';
@@ -9,7 +10,8 @@ import { PostEntity } from './entity/post.entity';
 export class PostService {
     constructor(
         @InjectRepository(PostEntity)
-        private readonly postRepository: Repository<PostEntity>
+        private readonly postRepository: Repository<PostEntity>,
+        private readonly uploadFileService: UploadFileService
     ) {}
 
     async getAllPosts(queries) {
@@ -22,8 +24,9 @@ export class PostService {
             .createQueryBuilder('post')
             // .leftJoinAndSelect('post.categories', 'categories')
             .leftJoinAndSelect('post.author', 'author')
+            .leftJoinAndSelect('post.uploadFile', 'uploadFile')
             // .select(['post.id', 'post.title', 'post.description', 'post.city', 'post.published', 'post.updatedAt', 'post.createdAt', 'user.firstName', 'user.lastName', 'categories.name', 'categories.id'])
-            .select(['post.id', 'post.content', 'post.published', 'post.updatedAt', 'post.createdAt', 'author.firstName', 'author.lastName'])
+            .select(['post.id', 'post.content', 'post.published', 'post.updatedAt', 'post.createdAt', 'uploadFile.Location', 'author.firstName', 'author.lastName'])
 
 
         // if(categories !== undefined) {
@@ -57,8 +60,14 @@ export class PostService {
 
         return post;
     }
-    async createPost(data: PostCreateDto, user) {
+    async createPost(data: PostCreateDto, user, files) {
         try {
+            console.log(files);
+            
+            if(files !== undefined) {
+                const uploadFile = await this.uploadFileService.create(files[0], user);
+                data.uploadFile = uploadFile;
+            }
             data.userId = +user.id;
             return await this.postRepository.save(data);
         } catch (error) {
