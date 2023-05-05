@@ -32,7 +32,9 @@ export class PostController {
     @User() user,
     @UploadedFiles() files
   ) {
-    console.log('data', data);
+    // console.log('data', data);
+    // console.log('user', user);
+    // console.log('files', files);
     
     return this.postService.createPost(data, user, files)
   }

@@ -37,9 +37,11 @@ export class PostEntity extends Timestamp{
   @JoinTable()
   author: UserEntity
 
-  @OneToOne(() => UploadFileEntity, uploadFile => uploadFile.post)
+  @OneToMany(() => UploadFileEntity, uploadFile => uploadFile.post, {
+    cascade: true
+  })
     @JoinColumn()
-    uploadFile: UploadFileEntity;
+    uploadFiles: UploadFileEntity[];
 
   // @OneToMany(() => CommentEntity, comment => comment.post)
   // @JoinTable()

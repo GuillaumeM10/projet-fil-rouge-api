@@ -5,5 +5,5 @@ export class PostCreateDto {
   categories?: Array<any>;
   published?: boolean;
   userId?: number;
-  uploadFile?: any;
+  uploadFiles?: any[];
 }

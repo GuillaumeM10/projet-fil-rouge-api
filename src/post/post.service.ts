@@ -24,9 +24,8 @@ export class PostService {
             .createQueryBuilder('post')
             // .leftJoinAndSelect('post.categories', 'categories')
             .leftJoinAndSelect('post.author', 'author')
-            .leftJoinAndSelect('post.uploadFile', 'uploadFile')
-            // .select(['post.id', 'post.title', 'post.description', 'post.city', 'post.published', 'post.updatedAt', 'post.createdAt', 'user.firstName', 'user.lastName', 'categories.name', 'categories.id'])
-            .select(['post.id', 'post.content', 'post.published', 'post.updatedAt', 'post.createdAt', 'uploadFile.Location', 'author.firstName', 'author.lastName'])
+            .leftJoinAndSelect('post.uploadFiles', 'uploadFiles')
+            .select(['post.id', 'post.content', 'post.published', 'post.updatedAt', 'post.createdAt', 'uploadFiles.Location', 'author.firstName', 'author.lastName'])
 
 
         // if(categories !== undefined) {
@@ -60,19 +59,25 @@ export class PostService {
 
         return post;
     }
+    
     async createPost(data: PostCreateDto, user, files) {
+        console.log('files', files);
+        
+        if (files !== undefined) {
+            let filesData = await Promise.all(files.map(async file => {
+                const uploadFile = await this.uploadFileService.create(file, user);
+                return uploadFile;
+            }));
+        
+            console.log('filesData', filesData);
+            data.uploadFiles = filesData;
+        }
+        
         try {
-            console.log(files);
-            
-            if(files !== undefined) {
-                const uploadFile = await this.uploadFileService.create(files[0], user);
-                data.uploadFile = uploadFile;
-            }
             data.userId = +user.id;
             return await this.postRepository.save(data);
         } catch (error) {
             console.log(error);
-            
             return error['detail'];
         }
     }

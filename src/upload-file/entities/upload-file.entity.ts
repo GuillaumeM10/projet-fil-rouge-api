@@ -30,6 +30,6 @@ export class UploadFileEntity extends Timestamp {
     })
     Bucket: string;
 
-    @OneToOne(() => PostEntity, post => post.uploadFile)
+    @ManyToOne(() => PostEntity, post => post.uploadFiles)
     post: PostEntity;
 }
