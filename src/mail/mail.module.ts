@@ -5,6 +5,24 @@ import { MailService } from './mail.service';
 import { join } from 'path';
 import { ConfigModule } from '@nestjs/config';
 
+// prod
+// transport: {
+//   host: process.env.MAIL_HOST,
+//   port: +process.env.MAIL_PORT,
+//   secure: true,
+//   auth: {
+//     user: process.env.MAIL_USER,
+//     pass: process.env.MAIL_PASSWORD,
+//   },
+// },
+
+// dev
+// transport: {
+//   host: process.env.MAIL_HOST,
+//   port: +process.env.MAIL_PORT,
+//   secure: false,
+// },
+
 @Global()
 @Module({
   imports: [
@@ -13,7 +31,6 @@ import { ConfigModule } from '@nestjs/config';
       // transport: process.env.MAIL_TRANSPORT,
       // or
       transport: {
-
         host: process.env.MAIL_HOST,
         port: +process.env.MAIL_PORT,
         secure: true,

@@ -18,6 +18,11 @@ export class UserService {
 
   async create(createUserDto: CreateUserDto) {
     const user = createUserDto
+
+    if(!user.password){
+      throw new NotFoundException(`Missing data`);
+    }
+
     user.password = bcrypt.hashSync(user.password, salt)
     try{
       const newUser = await this.userRepository.save(user)
