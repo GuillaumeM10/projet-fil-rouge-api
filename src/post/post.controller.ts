@@ -34,7 +34,7 @@ export class PostController {
   ) {
     // console.log('data', data);
     // console.log('user', user);
-    // console.log('files', files);
+    console.log('files from controller', files);
     
     return this.postService.createPost(data, user, files)
   }

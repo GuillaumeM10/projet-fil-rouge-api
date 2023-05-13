@@ -27,7 +27,7 @@ export class UploadFileService {
   async create(filesData, user) {
     const file = await this.uploadFileAws(user, filesData)
 
-    console.log(file);
+    // console.log(file);
 
     const uploadFile = await this.uploadFileRepository.create(file)
     return await this.uploadFileRepository.save(uploadFile)

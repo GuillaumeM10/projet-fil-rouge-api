@@ -13,9 +13,14 @@ import { ConfigModule } from '@nestjs/config';
       // transport: process.env.MAIL_TRANSPORT,
       // or
       transport: {
+
         host: process.env.MAIL_HOST,
         port: +process.env.MAIL_PORT,
-        secure: false,
+        secure: true,
+        auth: {
+          user: process.env.MAIL_USER,
+          pass: process.env.MAIL_PASSWORD,
+        },
       },
       defaults: {
         from: '"No Reply" <noreply@example.com>',
