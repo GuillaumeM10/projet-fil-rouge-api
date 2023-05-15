@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UploadFileService } from 'src/upload-file/upload-file.service';
 import { Repository } from 'typeorm';
@@ -15,7 +15,7 @@ export class PostService {
     ) {}
 
     async getAllPosts(queries) {
-        let { page, limit, categories, author } = queries;
+        let { page, limit, author } = queries;
 
         limit = limit ? +limit : 10;
         page = page ? +page : 1;
@@ -49,12 +49,18 @@ export class PostService {
     async getOnePostById(id: number) {
         const post = await this.postRepository
             .createQueryBuilder('post')
-            .leftJoinAndSelect('post.comments', 'comments')
-            .leftJoinAndSelect('post.categories', 'categories')
-            .leftJoinAndSelect('post.user', 'user')
-            .select(['post.id', 'post.title', 'post.description', 'post.city', 'post.published', 'post.updatedAt', 'post.createdAt', 'user.firstName', 'user.lastName', 'categories.name', 'categories.id', 'comments.id', 'comments.content', 'comments.createdAt','comments.updatedAt', 'comments.deletedAt'])
+            // .leftJoinAndSelect('post.comments', 'comments')
+            // .leftJoinAndSelect('post.categories', 'categories')
+            //only display user name
+            .leftJoinAndSelect('post.author', 'author')
+            .leftJoinAndSelect('post.uploadFiles', 'uploadFiles')
+            .select([
+                'post.id', 'post.content', 'post.published', 'post.updatedAt', 'post.createdAt', 
+                'author.firstName', 'author.lastName',
+                'uploadFiles.Location'
+            ])
             .where('post.id = :id', { id })
-            .orderBy('comments.id', 'DESC')
+            // .orderBy('comments.id', 'DESC')
             .getOne();
 
         return post;
@@ -81,14 +87,38 @@ export class PostService {
             return error['detail'];
         }
     }
-    async updatePost(id: number, data: PostUpdateDto) {
+    async updatePost(id: number, data: PostUpdateDto, user, files) {     
         const post = await this.postRepository.findOneBy({ id });
-        const postUpdate = { ...post, ...data };
-        await this.postRepository.save(postUpdate);
+        const postUpdate = { ...post, ...data }
 
-        return postUpdate;
+        if (!post) {
+            throw new NotFoundException(`Le post d'id ${id} n'existe pas.`);
+        }
+
+        if (files !== undefined) {
+            let filesData = await Promise.all(files.map(async file => {
+                const uploadFile = await this.uploadFileService.create(file, user);
+                return uploadFile;
+            }));
+            
+            postUpdate.uploadFiles = filesData;
+        }
+
+
+        try {
+            return await this.postRepository.save(postUpdate);
+        } catch (error) {
+            console.log(error);
+            return error['detail'];
+        }
     }
     async softDeletePost(id: number) {
-        return await this.postRepository.softDelete(id);
+        const postToRemove = await this.postRepository.softDelete(id);
+        
+        if(!postToRemove.affected) {
+            throw new NotFoundException(`Le post d'id ${id} n'existe pas.`);
+        }else{
+            return { message: 'Post supprimé.' };
+        }
     }
 }

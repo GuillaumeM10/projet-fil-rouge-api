@@ -1,15 +1,20 @@
-import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, ParseIntPipe, UseInterceptors, UploadedFiles } from '@nestjs/common';
 import { UserDetailService } from './user-detail.service';
 import { CreateUserDetailDto } from './dto/create-user-detail.dto';
 import { UpdateUserDetailDto } from './dto/update-user-detail.dto';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('users-details')
 export class UserDetailController {
   constructor(private readonly userDetailService: UserDetailService) {}
 
   @Post()
-  create(@Body() createUserDetailDto: CreateUserDetailDto) {
-    return this.userDetailService.create(createUserDetailDto);
+  @UseInterceptors(FilesInterceptor('files'))
+  create(
+    @Body() createUserDetailDto: CreateUserDetailDto,
+    @UploadedFiles() files
+  ) {
+    return this.userDetailService.create(createUserDetailDto, files);
   }
 
   @Get()
@@ -18,17 +23,26 @@ export class UserDetailController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(
+    @Param('id', ParseIntPipe) id: number
+  ) {
     return this.userDetailService.findOne(+id);
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateUserDetailDto: UpdateUserDetailDto) {
-    return this.userDetailService.update(+id, updateUserDetailDto);
+  @UseInterceptors(FilesInterceptor('files'))
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateUserDetailDto: UpdateUserDetailDto,
+    @UploadedFiles() files
+  ) {
+    return this.userDetailService.update(+id, updateUserDetailDto, files);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userDetailService.remove(+id);
+  softDelete(
+    @Param('id', ParseIntPipe) id: number
+  ) {
+    return this.userDetailService.softDelete(+id);
   }
 }

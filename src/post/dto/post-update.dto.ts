@@ -4,4 +4,6 @@ export class PostUpdateDto {
   city?: string;
   categories?: Array<any>;
   published?: boolean;
+  userId?: number;
+  uploadFiles?: any[];
 }

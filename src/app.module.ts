@@ -7,17 +7,17 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { UserDetailModule } from './user-detail/user-detail.module';
-import { CommentModule } from './comment/comment.module';
 import { SkillModule } from './skill/skill.module';
 import { LinkModule } from './link/link.module';
 import { FileModule } from './file/file.module';
 import { ExperienceModule } from './experience/experience.module';
 import { LinkCategoryModule } from './link-category/link-category.module';
-import { CityModule } from './city/city.module';
-import { ReplyModule } from './reply/reply.module';
 import { MailModule } from './mail/mail.module';
 import { TokenResetPasswordModule } from './token-reset-password/token-reset-password.module';
 import { UploadFileModule } from './upload-file/upload-file.module';
+import { CityModule } from './city/city.module';
+import { CommentModule } from './comment/comment.module';
+import { ReplyModule } from './reply/reply.module';
 
 @Module({
   imports: [
@@ -40,14 +40,13 @@ import { UploadFileModule } from './upload-file/upload-file.module';
     MailModule,
     TokenResetPasswordModule,
     UploadFileModule,
-    // CommentModule,
-    // SkillModule,
-    // LinkModule,
-    // FileModule,
-    // ExperienceModule,
-    // LinkCategoryModule,
-    // CityModule,
-    // ReplyModule,
+    CommentModule, // new
+    ReplyModule,
+    SkillModule,
+    CityModule,
+    LinkModule,
+    LinkCategoryModule,
+    ExperienceModule,
   ],
   controllers: [AppController],
   providers: [AppService],

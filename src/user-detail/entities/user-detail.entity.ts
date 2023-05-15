@@ -1,7 +1,11 @@
+import { CityEntity } from "src/city/entities/city.entity";
+import { ExperienceEntity } from "src/experience/entities/experience.entity";
 import { Timestamp } from "src/Generic/timestamp.entity";
+import { LinkEntity } from "src/link/entities/link.entity";
 import { SkillEntity } from "src/skill/entities/skill.entity";
+import { UploadFileEntity } from "src/upload-file/entities/upload-file.entity";
 import { UserEntity } from "src/user/entities/user.entity";
-import { Column, Entity, ManyToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('user_detail')
 export class UserDetailEntity extends Timestamp {
@@ -10,13 +14,6 @@ export class UserDetailEntity extends Timestamp {
 
   @OneToOne(() => UserEntity, user => user.userDetail)
   user: UserEntity; 
-
-
-  // @ManyToMany(() => FileEntity, file => file.userDetail, {
-  //   cascade: ["insert"]
-  // })
-  // @JoinTable()
-  // files: FileEntity[]
 
   @Column({
     nullable: true,
@@ -77,15 +74,45 @@ export class UserDetailEntity extends Timestamp {
     unique: false
   })
   range :number;
+  
+  @ManyToMany(() => SkillEntity, skill => skill.users) 
+  skills: SkillEntity[];
+  
+  @OneToOne(() => UploadFileEntity, {
+    cascade: true,
+    nullable: true
+  })
+  @JoinColumn()
+  banner: UploadFileEntity;
 
-  // @ManyToMany(() => SkillEntity, skill => skill.users) 
-  // skills: SkillEntity;
+  @OneToOne(() => UploadFileEntity, {
+    cascade: true,
+    nullable: true
+  })
+  @JoinColumn()
+  personalPicture: UploadFileEntity;
 
-  // banner: FileEntity;
-  // personalPicture: FileEntity;
-  // cv: FileEntity;
-  // experiences: ExperienceEntity;
-  // links: LinkEntity;
-  // cities: CityEntity; 
+  @OneToOne(() => UploadFileEntity, {
+    cascade: true,
+    nullable: true
+  })
+  @JoinColumn()
+  cv: UploadFileEntity;
 
+  @OneToMany(() => UploadFileEntity, uploadFile => uploadFile.userDetail, {
+    cascade: true,
+    nullable: true
+  })
+  @JoinColumn()
+  uploadFiles: UploadFileEntity[];
+  
+  @OneToMany(() => ExperienceEntity, experience => experience.user)
+  experiences: ExperienceEntity[];
+  
+  @OneToMany(() => LinkEntity, link => link.user)
+  links: LinkEntity[];
+  
+  @ManyToMany(() => CityEntity, city => city.users) 
+  cities: CityEntity[];
+  
 }

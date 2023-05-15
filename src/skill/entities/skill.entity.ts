@@ -26,9 +26,9 @@ export class SkillEntity extends Timestamp {
   })
   description: string;
 
-  // @ManyToMany(() => PostEntity, post => post.skills)
-  // posts: PostEntity;
+  @ManyToMany(() => PostEntity, post => post.skills)
+  posts: PostEntity;
 
-  // @ManyToMany(() => UserDetailEntity, user => user.skills)
-  // users: UserDetailEntity;
+  @ManyToMany(() => UserDetailEntity, user => user.skills)
+  users: UserDetailEntity;
 }

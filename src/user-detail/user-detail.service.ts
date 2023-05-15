@@ -12,8 +12,28 @@ export class UserDetailService {
     private readonly userDetailRepository: Repository<UserDetailEntity>
   ){}
 
-  async create(createUserDetailDto: CreateUserDetailDto) {
-    return await this.userDetailRepository.save(createUserDetailDto);
+  async create(createUserDetailDto: CreateUserDetailDto, files: any) {
+
+    console.log(files);
+    
+
+    if (files !== undefined) {
+      if(files && files.length > 0){
+        files.forEach(file => {
+          console.log(file);
+        });
+      }
+
+      createUserDetailDto.uploadFiles = files;
+    }
+
+    try{
+      return await this.userDetailRepository.save(createUserDetailDto);
+    }catch(error){
+      console.log(error);
+    }
+
+    // return await this.userDetailRepository.save(createUserDetailDto);
   }
 
   async findAll() {
@@ -28,11 +48,25 @@ export class UserDetailService {
     return userDetail;
   }
 
-  async update(id: number, updateUserDetailDto: UpdateUserDetailDto) {
+  async update(id: number, updateUserDetailDto: UpdateUserDetailDto, files: any) {
     const userDetail = await this.findOne(id);
 
     if (!userDetail) {
       throw new NotFoundException(`UserDetail #${id} not found`);
+    }
+
+    console.log(files);
+    console.log(id);
+    
+
+    if (files !== undefined) {
+      if(files && files.length > 0){
+        files.forEach(file => {
+          console.log(file);
+        });
+      }
+
+      updateUserDetailDto.uploadFiles = files;
     }
 
     const userDetailUpdate = { ...userDetail, ...updateUserDetailDto };
@@ -42,7 +76,7 @@ export class UserDetailService {
     return userDetailUpdate;
   }
 
-  async remove(id: number) {
+  async softDelete(id: number) {
     const userDetail = await this.userDetailRepository.softDelete(id);
     if (!userDetail) {
       throw new NotFoundException(`UserDetail #${id} not found`);

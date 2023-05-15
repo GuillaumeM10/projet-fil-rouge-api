@@ -10,6 +10,17 @@ import { PostService } from './post.service';
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
+  @Post()
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FilesInterceptor('files'))
+  createPost(
+    @Body() data: PostCreateDto,
+    @User() user,
+    @UploadedFiles() files
+  ) {    
+    return this.postService.createPost(data, user, files)
+  }
+
   @Get()
   getAllPosts(
     @Query() queries
@@ -24,27 +35,16 @@ export class PostController {
     return this.postService.getOnePostById(id)
   }
 
-  @Post()
+  @Put(':id')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FilesInterceptor('files'))
-  createPost(
-    @Body() data: PostCreateDto,
+  updatePost(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() data: PostUpdateDto,
     @User() user,
     @UploadedFiles() files
   ) {
-    // console.log('data', data);
-    // console.log('user', user);
-    console.log('files from controller', files);
-    
-    return this.postService.createPost(data, user, files)
-  }
-
-  @Put(':id')
-  updatePost(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() data: PostUpdateDto
-  ) {
-    return this.postService.updatePost(id, data)
+    return this.postService.updatePost(id, data, user, files)
   }
 
   @Delete(':id')

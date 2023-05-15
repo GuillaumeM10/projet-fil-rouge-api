@@ -1,8 +1,10 @@
 import { CommentEntity } from "src/comment/entities/comment.entity";
 import { Timestamp } from "src/Generic/timestamp.entity";
 import { PostEntity } from "src/post/entity/post.entity";
+import { ReplyEntity } from "src/reply/entities/reply.entity";
+import { SkillEntity } from "src/skill/entities/skill.entity";
 import { UserDetailEntity } from "src/user-detail/entities/user-detail.entity";
-import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity("user")
 export class UserEntity extends Timestamp{
@@ -45,8 +47,11 @@ export class UserEntity extends Timestamp{
 
   @OneToMany(() => PostEntity, post => post.author)
   posts: PostEntity[]
-  
-  // @OneToMany(() => CommentEntity, comment => comment.user)
-  // comments: CommentEntity[]
 
+  @OneToMany(() => CommentEntity, comment => comment.user)
+  comments: CommentEntity[]
+
+  @OneToMany(() => ReplyEntity, reply => reply.author)
+  replies: ReplyEntity[]
+  
 }

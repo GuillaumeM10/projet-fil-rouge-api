@@ -20,7 +20,7 @@ export class UserService {
     const user = createUserDto
 
     if(!user.password){
-      throw new NotFoundException(`Missing data`);
+      throw new NotFoundException(`Toutes les informations ne sont pas renseignées.`);
     }
 
     user.password = bcrypt.hashSync(user.password, salt)
@@ -46,7 +46,7 @@ export class UserService {
                     .where('user.id = :id', { id })
                     .getOne();
     if(user === null){
-      throw new NotFoundException(`User #${id} not found`);
+      throw new NotFoundException(`Impossible de trouver l'utilisateur #${id}.`);
     }
     return user;
   }
@@ -55,7 +55,7 @@ export class UserService {
   async findOneByEmail(email: string) {
     const user = await this.userRepository.findOneBy({ email });
     if(user === null){
-      throw new NotFoundException(`User ${email} not found`);
+      throw new NotFoundException(`Impossible de trouver l'utilisateur ${email}.`);
     }
     return user;
   }
@@ -64,7 +64,7 @@ export class UserService {
     const user = await this.findOne(id);
 
     if (!user) {
-      throw new NotFoundException(`User #${id} not found`);
+      throw new NotFoundException(`Impossible de trouver l'utilisateur #${id}.`);
     }
 
     const userUpdate = { ...user, ...updateUserDto };
@@ -78,7 +78,7 @@ export class UserService {
     const user = await this.findOneByEmail(updateUserDto.email);
 
     if (!user) {
-      throw new NotFoundException(`User ${updateUserDto.email} not found`);
+      throw new NotFoundException(`Impossible de trouver l'utilisateur ${updateUserDto.email}.`);
     }
 
     const userUpdate = { ...user, ...updateUserDto };
@@ -89,17 +89,17 @@ export class UserService {
     return userUpdate;
   }
 
-  async remove(id: number) {    
+  async softDelete(id: number) {    
     const user = await this.findOne(id);
     if(user.userDetail){
-      await this.userDetailService.remove(user.userDetail.id);
+      await this.userDetailService.softDelete(user.userDetail.id);
     }
     const userToRemove = await this.userRepository.softDelete(id);
 
     if (!userToRemove) {
-      throw new NotFoundException(`User #${id} not found`);
+      throw new NotFoundException(`Impossible de trouver l'utilisateur #${id}.`);
     }
 
-    return { message: `User #${id} deleted`};
+    return { message: `L'utilisateur #${id} a été supprimé.`};
   }
 }

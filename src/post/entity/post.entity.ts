@@ -17,33 +17,30 @@ export class PostEntity extends Timestamp{
   content: string
 
   @Column({
-    default: true
+    default: true,
+    nullable: true
   })
   published: boolean
 
-  // @ManyToMany(() => FileEntity, file => file.posts, {
-  //   cascade: ["insert"]
-  // })
-  // @JoinTable()
-  // files: FileEntity[]
-
-  // @ManyToMany(() => SkillEntity, skill => skill.posts, {
-  //   cascade: ["insert"]
-  // })
-  // @JoinTable()
-  // skills: SkillEntity[]
+  @ManyToMany(() => SkillEntity, skill => skill.posts, {
+    cascade: ["insert"],
+    nullable: true
+  })
+  @JoinTable()
+  skills: SkillEntity[]
 
   @ManyToOne(() => UserEntity, user => user.posts)
   @JoinTable()
   author: UserEntity
 
   @OneToMany(() => UploadFileEntity, uploadFile => uploadFile.post, {
-    cascade: true
+    cascade: true,
+    nullable: true
   })
-    @JoinColumn()
-    uploadFiles: UploadFileEntity[];
+  @JoinColumn()
+  uploadFiles: UploadFileEntity[];
 
-  // @OneToMany(() => CommentEntity, comment => comment.post)
-  // @JoinTable()
-  // comments: CommentEntity[]
+  @OneToMany(() => CommentEntity, comment => comment.post)
+  @JoinTable()
+  comments: CommentEntity[]
 }

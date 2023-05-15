@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { S3 } from 'aws-sdk';
 require('aws-sdk/lib/maintenance_mode_message').suppress = true;
@@ -34,6 +34,8 @@ export class UploadFileService {
   }
 
   async uploadFileAws(user, fileData){
+    console.log('uploadFileAws', fileData);
+    
     const fileName = `${Date.now()}.${fileData.originalname.split('.').pop()}`
     
     const uploadParams = {
@@ -45,19 +47,50 @@ export class UploadFileService {
     return this.s3.upload(uploadParams).promise()
   }
 
-  findAll() {
-    return `This action returns all uploadFile`;
+  async findAll() {
+    // get all UploadFile from database
+    return await this.uploadFileRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} uploadFile`;
+  async findOne(id: number) {
+    const uploadFile = await this.uploadFileRepository.findOneBy({ id })
+    if(!uploadFile){
+      throw new NotFoundException(`UploadFile #${id} not found`);
+    }
+    return uploadFile;
   }
 
-  update(id: number, updateUploadFileDto: UpdateUploadFileDto) {
-    return `This action updates a #${id} uploadFile`;
+  async findOneAws(key: string) {
+    if (this.bucketName && key) {
+      const params = {
+        Bucket: this.bucketName,
+        Key: `${key}`,
+      }
+      return await this.s3.getObject(params).promise()
+    }else{
+      throw new NotFoundException(`UploadFile #${key} not found`);
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} uploadFile`;
+  async update(id: number, fileData, user) {
+    console.log('update files', fileData);
+    console.log('update user', user.id);
+
+    if (this.bucketName && id) {
+      await this.remove(id)
+      await this.create(user, fileData)
+    }
+  }
+
+  async remove(id: number) {
+    if (this.bucketName && id) {
+      const params = {
+        Bucket: this.bucketName,
+        Key: `${id}`,
+      }
+      return await this.s3.deleteObject(params).promise()
+    }else{
+      throw new NotFoundException(`UploadFile #${id} not found`);
+    }
   }
 }

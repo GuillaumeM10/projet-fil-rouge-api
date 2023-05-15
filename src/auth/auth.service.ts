@@ -55,7 +55,7 @@ export class AuthService {
 
     this.mailService.create(createTokenResetPasswordDto, token.token);
 
-    return `An email has been sent to ${createTokenResetPasswordDto.email}`;
+    return `Un email à été envoyé à ${createTokenResetPasswordDto.email}`;
   }
 
   async resetPassword(token: string, resetPasswordDto: ResetPasswordDto) {
@@ -68,7 +68,7 @@ export class AuthService {
     const user = await this.usersService.findOneByEmail(findToken.user.email);
 
     if (!user) {
-      throw new HttpException('User not found', 400);
+      throw new HttpException('Cet utilisateur n\'existe pas.', 400);
     }
 
     const updatedUser = await this.usersService.updatePassword(
