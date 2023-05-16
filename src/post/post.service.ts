@@ -24,11 +24,11 @@ export class PostService {
             .createQueryBuilder('post')
             .leftJoinAndSelect('post.author', 'author')
             .leftJoinAndSelect('post.skills', 'skills')
-            // .leftJoinAndSelect('post.comments', 'comments')
+            .leftJoinAndSelect('post.comments', 'comments')
             .leftJoinAndSelect('post.uploadFiles', 'uploadFiles')
             .select([
                 'post.id', 'post.updatedAt', 'post.createdAt', 'post.published', 'post.content',
-                // 'comments.id', 'comments.content', 'comments.createdAt', 'comments.updatedAt',
+                'comments.id', 'comments.content', 'comments.user', 'comments.createdAt', 'comments.updatedAt',
                 'skills.id', 'skills.name',
                 'uploadFiles.Location', 
                 'author.firstName', 'author.lastName'
@@ -56,16 +56,13 @@ export class PostService {
     async getOnePostById(id: number) {
         const post = await this.postRepository
             .createQueryBuilder('post')
-            // .leftJoinAndSelect('post.comments', 'comments')
-            // .leftJoinAndSelect('post.categories', 'categories')
-            //only display user name
             .leftJoinAndSelect('post.author', 'author')
             .leftJoinAndSelect('post.skills', 'skills')
-            // .leftJoinAndSelect('post.comments', 'comments')
+            .leftJoinAndSelect('post.comments', 'comments')
             .leftJoinAndSelect('post.uploadFiles', 'uploadFiles')
             .select([
                 'post.id', 'post.updatedAt', 'post.createdAt', 'post.published', 'post.content',
-                // 'comments.id', 'comments.content', 'comments.createdAt', 'comments.updatedAt',
+                'comments.id', 'comments.content', 'comments.user', 'comments.createdAt', 'comments.updatedAt',
                 'skills.id', 'skills.name',
                 'uploadFiles.Location', 
                 'author.firstName', 'author.lastName'

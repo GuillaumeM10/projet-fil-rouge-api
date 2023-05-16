@@ -9,17 +9,24 @@ export class CommentEntity extends Timestamp{
   @PrimaryGeneratedColumn()
   id: number
   
-  // @Column({
-  //   nullable: false
-  // })
-  // content: string
+  @Column({
+    nullable: false
+  })
+  content: string
 
-  @ManyToOne(() => UserEntity, user => user.comments)
+  @ManyToOne(() => UserEntity, user => user.comments, {
+    onDelete: 'CASCADE'
+  })
   user: UserEntity
 
-  @ManyToOne(() => PostEntity, post => post.comments)
+  @ManyToOne(() => PostEntity, post => post.comments, {
+    onDelete: 'CASCADE'
+  })
   post: PostEntity
 
-  @OneToMany(() => ReplyEntity, reply => reply.comment)
+  @OneToMany(() => ReplyEntity, reply => reply.comment, {
+    cascade: true,
+    nullable: true
+  })
   replies: ReplyEntity[]
 }

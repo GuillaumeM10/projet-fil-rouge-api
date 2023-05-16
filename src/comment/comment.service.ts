@@ -12,8 +12,17 @@ export class CommentService {
     private readonly commentRepository: Repository<CommentEntity>
   ) {}
 
-  async create(createCommentDto: CreateCommentDto) {
-    return await this.commentRepository.save(createCommentDto);
+  async create(createCommentDto: CreateCommentDto, user) {
+    try{
+      createCommentDto.user = user.id;
+
+      console.log('createCommentDto', createCommentDto);
+      
+      return await this.commentRepository.save(createCommentDto);
+    }catch(err){
+      console.log(err);
+      return err.detail;
+    }
   }
 
   async findAll() {
@@ -36,7 +45,11 @@ export class CommentService {
             .where('comment.id = :id', { id })
             .getOne();
 
-        return comment;
+    if(comment !== null){
+      return comment;    
+    }else{
+      throw new NotFoundException(`Comment #${id} not found`);
+    }
   }
 
   async update(id: number, updateCommentDto: UpdateCommentDto) {
@@ -54,6 +67,14 @@ export class CommentService {
   }
 
   async remove(id: number) {
-    return await this.commentRepository.softDelete(id);
+    try{
+      const comment = await this.commentRepository.softDelete(id);
+      if(comment.affected === 0){
+        throw new NotFoundException(`Comment #${id} not found`);
+      }
+      return { message: "Commentaire supprimé." };
+    }catch(err){
+      throw new NotFoundException(`Comment #${id} not found`);
+    }
   }
 }

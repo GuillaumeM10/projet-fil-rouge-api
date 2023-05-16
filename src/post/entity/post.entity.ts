@@ -40,7 +40,10 @@ export class PostEntity extends Timestamp{
   @JoinColumn()
   uploadFiles: UploadFileEntity[];
 
-  @OneToMany(() => CommentEntity, comment => comment.post)
+  @OneToMany(() => CommentEntity, comment => comment.post, {
+    cascade: true,
+    nullable: true
+  })
   @JoinTable()
   comments: CommentEntity[]
 }
