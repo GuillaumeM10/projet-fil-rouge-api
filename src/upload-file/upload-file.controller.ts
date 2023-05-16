@@ -1,8 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put, UseGuards, UseInterceptors, UploadedFiles } from '@nestjs/common';
 import { UploadFileService } from './upload-file.service';
 import { CreateUploadFileDto } from './dto/create-upload-file.dto';
 import { UpdateUploadFileDto } from './dto/update-upload-file.dto';
 import { User } from 'src/decorator/user.decorator';
+import { JwtAuthGuard } from 'src/auth/guard/jwt-passport.guard';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('upload-file')
 export class UploadFileController {
@@ -32,16 +34,23 @@ export class UploadFileController {
   }
 
   @Put(':id')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FilesInterceptor('files'))
   update(
     @Param('id') id: string, 
     @User() user,
-    @Body() updateUploadFileDto: UpdateUploadFileDto
+    @Body() updateUploadFileDto: UpdateUploadFileDto,
+    @UploadedFiles() file
   ) {
-    return this.uploadFileService.update(+id, updateUploadFileDto, user);
+    return this.uploadFileService.update(+id, updateUploadFileDto, user, file);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.uploadFileService.remove(+id);
+  @UseGuards(JwtAuthGuard)
+  remove(
+    @Param('id') id: string,
+    @Body('rmFromDb') rmFromDb: boolean
+  ) {
+    return this.uploadFileService.remove(+id, rmFromDb);
   }
 }

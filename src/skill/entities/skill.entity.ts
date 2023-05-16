@@ -15,20 +15,25 @@ export class SkillEntity extends Timestamp {
   name: string;
 
   @Column({
-    nullable: false,
-    unique: false
+    nullable: true,
+    unique: false,
+    default: 0
   })
   level: number;
 
   @Column({
-    nullable: false,
+    nullable: true,
     unique: false
   })
   description: string;
 
-  @ManyToMany(() => PostEntity, post => post.skills)
+  @ManyToMany(() => PostEntity, post => post.skills, {
+    nullable: true
+  })
   posts: PostEntity;
 
-  @ManyToMany(() => UserDetailEntity, user => user.skills)
+  @ManyToMany(() => UserDetailEntity, user => user.skills, {
+    nullable: true
+  })
   users: UserDetailEntity;
 }

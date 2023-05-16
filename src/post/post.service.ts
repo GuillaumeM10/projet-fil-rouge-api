@@ -22,10 +22,17 @@ export class PostService {
 
         const query = await this.postRepository
             .createQueryBuilder('post')
-            // .leftJoinAndSelect('post.categories', 'categories')
             .leftJoinAndSelect('post.author', 'author')
+            // .leftJoinAndSelect('post.skills', 'skills')
+            // .leftJoinAndSelect('post.comments', 'comments')
             .leftJoinAndSelect('post.uploadFiles', 'uploadFiles')
-            .select(['post.id', 'post.content', 'post.published', 'post.updatedAt', 'post.createdAt', 'uploadFiles.Location', 'author.firstName', 'author.lastName'])
+            .select([
+                'post.id', 'post.updatedAt', 'post.createdAt', 'post.published', 'post.content',
+                // 'comments.id', 'comments.content', 'comments.createdAt', 'comments.updatedAt',
+                // 'skills.id', 'skills.name',
+                'uploadFiles.Location', 
+                'author.firstName', 'author.lastName'
+            ])
 
 
         // if(categories !== undefined) {
@@ -53,11 +60,15 @@ export class PostService {
             // .leftJoinAndSelect('post.categories', 'categories')
             //only display user name
             .leftJoinAndSelect('post.author', 'author')
+            // .leftJoinAndSelect('post.skills', 'skills')
+            // .leftJoinAndSelect('post.comments', 'comments')
             .leftJoinAndSelect('post.uploadFiles', 'uploadFiles')
             .select([
-                'post.id', 'post.content', 'post.published', 'post.updatedAt', 'post.createdAt', 
-                'author.firstName', 'author.lastName',
-                'uploadFiles.Location'
+                'post.id', 'post.updatedAt', 'post.createdAt', 'post.published', 'post.content',
+                // 'comments.id', 'comments.content', 'comments.createdAt', 'comments.updatedAt',
+                // 'skills.id', 'skills.name',
+                'uploadFiles.Location', 
+                'author.firstName', 'author.lastName'
             ])
             .where('post.id = :id', { id })
             // .orderBy('comments.id', 'DESC')

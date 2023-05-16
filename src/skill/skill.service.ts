@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { NotFoundError } from 'rxjs';
 import { Repository } from 'typeorm';
 import { CreateSkillDto } from './dto/create-skill.dto';
 import { UpdateSkillDto } from './dto/update-skill.dto';
@@ -12,23 +13,50 @@ export class SkillService {
     private readonly skillRepository: Repository<SkillEntity>
   ) {}
 
-  create(createSkillDto: CreateSkillDto) {
-    return 'This action adds a new skill';
+  async create(createSkillDto: CreateSkillDto, user) {
+    if (user) {
+      try{
+        const skill = this.skillRepository.create(createSkillDto);
+        return await this.skillRepository.save(skill);
+      }catch(err){
+        throw new ConflictException('Ce skill existe déjà');
+      }
+    }else{
+      throw new NotFoundException({message: 'User not found'});
+    }
   }
 
-  findAll() {
-    return `This action returns all skill`;
+  getAll(queries) {
+    const query = queries
+    ? {where: queries}
+    : {};
+    return this.skillRepository.find(query);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} skill`;
+  getOne(id: number) {
+    if (id) {
+      return this.skillRepository.findOneBy({id});
+    }else{
+      throw new NotFoundException({message: 'Skill not found'});
+    }
   }
 
-  update(id: number, updateSkillDto: UpdateSkillDto) {
-    return `This action updates a #${id} skill`;
+  async update(id: number, updateSkillDto: UpdateSkillDto, user) {
+    const skill = await this.skillRepository.findOneBy({id});
+    const updateSkill = { ...skill, ...updateSkillDto };
+    if(updateSkill){
+      try{
+        const skill = this.skillRepository.create(updateSkillDto);
+        return await this.skillRepository.save(skill);
+      }catch(err){
+        throw new ConflictException('Ce skill existe déjà');
+      }
+    }else{
+      throw new NotFoundException({message: 'Skill not found'});
+    }
   }
 
-  remove(id: number) {
+  softDelete(id: number, user) {
     return `This action removes a #${id} skill`;
   }
 }

@@ -34,8 +34,6 @@ export class UploadFileService {
   }
 
   async uploadFileAws(user, fileData){
-    console.log('uploadFileAws', fileData);
-    
     const fileName = `${Date.now()}.${fileData.originalname.split('.').pop()}`
     
     const uploadParams = {
@@ -72,23 +70,44 @@ export class UploadFileService {
     }
   }
 
-  async update(id: number, fileData, user) {
-    console.log('update files', fileData);
-    console.log('update user', user.id);
+  async update(id: number, fileData, user, newfile) {
 
-    if (this.bucketName && id) {
+    if (this.bucketName && id && newfile) {
       await this.remove(id)
-      await this.create(user, fileData)
+      const file = await this.findOne(id)
+
+      const uploadFile = await this.uploadFileAws(user, newfile[0])
+      file.Key = uploadFile.Key
+      file.key = uploadFile.key
+      file.ETag = uploadFile.ETag
+      file.Location = uploadFile.Location
+      return await this.uploadFileRepository.save(file)
+
+    }else{
+      throw new NotFoundException(`UploadFile #${id} not found`);
     }
   }
 
-  async remove(id: number) {
+  async removeFromDb(id: number) {
     if (this.bucketName && id) {
+      const fileToRemove = await this.findOne(id)
+      return await this.uploadFileRepository.remove(fileToRemove)
+    }else{
+      throw new NotFoundException(`UploadFile #${id} not found`);
+    }
+  }
+
+  async remove(id: number, rmFromDb: boolean = false) {
+    if (this.bucketName && id) {
+      const fileToRemove = await this.findOne(id)
+
       const params = {
         Bucket: this.bucketName,
-        Key: `${id}`,
+        Key: `${fileToRemove.Key}`,
       }
-      return await this.s3.deleteObject(params).promise()
+      const file = await this.s3.deleteObject(params).promise()
+      rmFromDb && await this.removeFromDb(id)
+      return file
     }else{
       throw new NotFoundException(`UploadFile #${id} not found`);
     }
