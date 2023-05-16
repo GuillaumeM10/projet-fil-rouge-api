@@ -23,13 +23,13 @@ export class PostService {
         const query = await this.postRepository
             .createQueryBuilder('post')
             .leftJoinAndSelect('post.author', 'author')
-            // .leftJoinAndSelect('post.skills', 'skills')
+            .leftJoinAndSelect('post.skills', 'skills')
             // .leftJoinAndSelect('post.comments', 'comments')
             .leftJoinAndSelect('post.uploadFiles', 'uploadFiles')
             .select([
                 'post.id', 'post.updatedAt', 'post.createdAt', 'post.published', 'post.content',
                 // 'comments.id', 'comments.content', 'comments.createdAt', 'comments.updatedAt',
-                // 'skills.id', 'skills.name',
+                'skills.id', 'skills.name',
                 'uploadFiles.Location', 
                 'author.firstName', 'author.lastName'
             ])
@@ -60,13 +60,13 @@ export class PostService {
             // .leftJoinAndSelect('post.categories', 'categories')
             //only display user name
             .leftJoinAndSelect('post.author', 'author')
-            // .leftJoinAndSelect('post.skills', 'skills')
+            .leftJoinAndSelect('post.skills', 'skills')
             // .leftJoinAndSelect('post.comments', 'comments')
             .leftJoinAndSelect('post.uploadFiles', 'uploadFiles')
             .select([
                 'post.id', 'post.updatedAt', 'post.createdAt', 'post.published', 'post.content',
                 // 'comments.id', 'comments.content', 'comments.createdAt', 'comments.updatedAt',
-                // 'skills.id', 'skills.name',
+                'skills.id', 'skills.name',
                 'uploadFiles.Location', 
                 'author.firstName', 'author.lastName'
             ])

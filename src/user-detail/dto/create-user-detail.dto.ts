@@ -17,12 +17,12 @@ export class CreateUserDetailDto {
   phone?: string;
   status?: string;
   range?: number;
-  skills?: SkillEntity[];
+  // skills?: SkillEntity[];
   banner?: any;
   personalPicture?: any;
   cv?: any;
   uploadFiles?: any[];
   experiences?: ExperienceEntity[];
-  links?: LinkEntity[];
+  // links?: LinkEntity[];
   cities?: CityEntity[];
 }

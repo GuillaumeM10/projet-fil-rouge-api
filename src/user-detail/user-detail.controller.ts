@@ -1,8 +1,10 @@
-import { Controller, Get, Post, Body, Param, Delete, Put, ParseIntPipe, UseInterceptors, UploadedFiles } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, ParseIntPipe, UseInterceptors, UploadedFiles, UseGuards } from '@nestjs/common';
 import { UserDetailService } from './user-detail.service';
 import { CreateUserDetailDto } from './dto/create-user-detail.dto';
 import { UpdateUserDetailDto } from './dto/update-user-detail.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import { JwtAuthGuard } from 'src/auth/guard/jwt-passport.guard';
+import { User } from 'src/decorator/user.decorator';
 
 @Controller('users-details')
 export class UserDetailController {
@@ -30,13 +32,15 @@ export class UserDetailController {
   }
 
   @Put(':id')
+  @UseGuards(JwtAuthGuard)
   @UseInterceptors(FilesInterceptor('files'))
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateUserDetailDto: UpdateUserDetailDto,
+    @User() user,
     @UploadedFiles() files
   ) {
-    return this.userDetailService.update(+id, updateUserDetailDto, files);
+    return this.userDetailService.update(+id, updateUserDetailDto, user, files);
   }
 
   @Delete(':id')

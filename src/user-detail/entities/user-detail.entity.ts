@@ -5,7 +5,7 @@ import { LinkEntity } from "src/link/entities/link.entity";
 import { SkillEntity } from "src/skill/entities/skill.entity";
 import { UploadFileEntity } from "src/upload-file/entities/upload-file.entity";
 import { UserEntity } from "src/user/entities/user.entity";
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('user_detail')
 export class UserDetailEntity extends Timestamp {
@@ -75,7 +75,11 @@ export class UserDetailEntity extends Timestamp {
   })
   range :number;
   
-  @ManyToMany(() => SkillEntity, skill => skill.users) 
+  @ManyToMany(() => SkillEntity, skill => skill.users, {
+    cascade: ["insert"],
+    nullable: true
+  }) 
+  @JoinTable()
   skills: SkillEntity[];
   
   @OneToOne(() => UploadFileEntity, {
@@ -106,13 +110,22 @@ export class UserDetailEntity extends Timestamp {
   @JoinColumn()
   uploadFiles: UploadFileEntity[];
   
-  @OneToMany(() => ExperienceEntity, experience => experience.user)
+  @OneToMany(() => ExperienceEntity, experience => experience.user, {
+    cascade: ["insert"],
+    nullable: true
+  })
   experiences: ExperienceEntity[];
   
-  @OneToMany(() => LinkEntity, link => link.user)
+  @OneToMany(() => LinkEntity, link => link.user, {
+    cascade: ["insert"],
+    nullable: true
+  })
   links: LinkEntity[];
   
-  @ManyToMany(() => CityEntity, city => city.users) 
+  @ManyToMany(() => CityEntity, city => city.users, {
+    cascade: ["insert"],
+    nullable: true
+  }) 
   cities: CityEntity[];
   
 }

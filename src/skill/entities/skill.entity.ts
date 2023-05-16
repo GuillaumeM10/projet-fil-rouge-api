@@ -30,10 +30,10 @@ export class SkillEntity extends Timestamp {
   @ManyToMany(() => PostEntity, post => post.skills, {
     nullable: true
   })
-  posts: PostEntity;
+  posts: PostEntity[];
 
   @ManyToMany(() => UserDetailEntity, user => user.skills, {
     nullable: true
   })
-  users: UserDetailEntity;
+  users: UserDetailEntity[];
 }

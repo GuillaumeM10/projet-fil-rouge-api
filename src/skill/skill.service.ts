@@ -42,21 +42,36 @@ export class SkillService {
   }
 
   async update(id: number, updateSkillDto: UpdateSkillDto, user) {
+
     const skill = await this.skillRepository.findOneBy({id});
     const updateSkill = { ...skill, ...updateSkillDto };
+
     if(updateSkill){
       try{
-        const skill = this.skillRepository.create(updateSkillDto);
-        return await this.skillRepository.save(skill);
+
+        return await this.skillRepository.save(updateSkill);
+
       }catch(err){
+
         throw new ConflictException('Ce skill existe déjà');
+
       }
+    }else{
+
+      throw new NotFoundException({message: 'Skill not found'});
+      
+    }
+
+  }
+
+  async softDelete(id: number, user) {
+    const skill = await this.skillRepository.findOneBy({id});
+
+    if (id && skill) {
+      await this.skillRepository.softDelete({id});
+      return skill;
     }else{
       throw new NotFoundException({message: 'Skill not found'});
     }
-  }
-
-  softDelete(id: number, user) {
-    return `This action removes a #${id} skill`;
   }
 }
