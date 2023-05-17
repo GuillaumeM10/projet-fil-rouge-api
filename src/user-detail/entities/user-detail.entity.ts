@@ -127,6 +127,6 @@ export class UserDetailEntity extends Timestamp {
     cascade: ["insert"],
     nullable: true
   }) 
+  @JoinTable()
   cities: CityEntity[];
-  
 }
