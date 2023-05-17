@@ -1,26 +1,89 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateLinkDto } from './dto/create-link.dto';
 import { UpdateLinkDto } from './dto/update-link.dto';
+import { LinkEntity } from './entities/link.entity';
 
 @Injectable()
 export class LinkService {
-  create(createLinkDto: CreateLinkDto) {
-    return 'This action adds a new link';
+  constructor(
+    @InjectRepository(LinkEntity)
+    private readonly linkRepository: Repository<LinkEntity>
+  ) {}
+
+  async create(createLinkDto: CreateLinkDto, user) {
+    try{
+        
+        createLinkDto.user = user.id;
+        return await this.linkRepository.save(createLinkDto);
+
+    }catch(err){
+        console.log(err);
+        return err.detail;
+    }
   }
 
-  findAll() {
-    return `This action returns all link`;
+  async findAll() {
+    const links = await this.linkRepository
+            .createQueryBuilder('link')
+            .leftJoinAndSelect('link.user', 'user', 'user.id = link.userId')
+            .select([
+              'link.id', 'link.name', 'link.url', 'link.description', 'link.deletedAt', 'link.updatedAt', 'link.createdAt',
+              // 'user.firstName', 'user.lastName'
+            ])
+            .orderBy('link.id', 'DESC')
+            .getMany();
+
+        return links;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} link`;
+  async findOne(id: number) {
+    const link = await this.linkRepository
+            .createQueryBuilder('link')
+            .leftJoinAndSelect('link.user', 'user', 'user.id = link.userId')
+            .select([
+              'link.id', 'link.name', 'link.url', 'link.description', 'link.deletedAt', 'link.updatedAt', 'link.createdAt',
+              // 'user.firstName', 'user.lastName'
+            ])
+            .where('link.id = :id', { id })
+            .getOne();
+
+    if(link !== null){
+      return link;    
+    }else{
+      throw new NotFoundException(`Link #${id} not found`);
+    }
   }
 
-  update(id: number, updateLinkDto: UpdateLinkDto) {
-    return `This action updates a #${id} link`;
+  async update(id: number, updateLinkDto: UpdateLinkDto) {
+    const link = await this.findOne(id);
+
+    if (!link) {
+      throw new NotFoundException(`Link #${id} not found`);
+    }
+
+    const updatedLink = { ...link, ...updateLinkDto };
+
+    try{
+      await this.linkRepository.save(updatedLink);
+    }catch(err){ 
+      console.log(err);
+      return err.detail;
+    }
+
+    return updatedLink;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} link`;
+  async softDelete(id: number) {
+    const link = await this.findOne(id);
+
+    if (!link) {
+      throw new NotFoundException(`Link #${id} not found`);
+    }
+
+    await this.linkRepository.softDelete(id)
+
+    return { message: `Lien suppimé.`};
   }
 }

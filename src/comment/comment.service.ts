@@ -14,11 +14,10 @@ export class CommentService {
 
   async create(createCommentDto: CreateCommentDto, user) {
     try{
-      createCommentDto.user = user.id;
 
-      console.log('createCommentDto', createCommentDto);
-      
+      createCommentDto.user = user.id;
       return await this.commentRepository.save(createCommentDto);
+    
     }catch(err){
       console.log(err);
       return err.detail;
@@ -30,7 +29,10 @@ export class CommentService {
     const comments = await this.commentRepository
             .createQueryBuilder('comment')
             .leftJoinAndSelect('comment.user', 'user', 'user.id = comment.userId')
-            .select(['comment.id', 'comment.content', 'comment.deletedAt', 'comment.updatedAt', 'comment.createdAt', 'user.firstName', 'user.lastName'])
+            .select([
+              'comment.id', 'comment.content', 'comment.deletedAt', 'comment.updatedAt', 'comment.createdAt', 
+              'user.firstName', 'user.lastName'
+            ])
             .orderBy('comment.id', 'DESC')
             .getMany();
 
@@ -41,7 +43,10 @@ export class CommentService {
     const comment = await this.commentRepository
             .createQueryBuilder('comment')
             .leftJoinAndSelect('comment.user', 'user', 'user.id = comment.userId')
-            .select(['comment.id', 'comment.content', 'comment.deletedAt', 'comment.updatedAt', 'comment.createdAt', 'user.firstName', 'user.lastName'])
+            .select([
+              'comment.id', 'comment.content', 'comment.deletedAt', 'comment.updatedAt', 'comment.createdAt', 
+              'user.firstName', 'user.lastName'
+            ])
             .where('comment.id = :id', { id })
             .getOne();
 
@@ -61,12 +66,17 @@ export class CommentService {
 
     const commentUpdate = { ...comment, ...updateCommentDto };
 
-    await this.commentRepository.save(commentUpdate);
+    try{
+      await this.commentRepository.save(commentUpdate);
+    }catch(err){
+      console.log(err);
+      return err.detail;
+    }
 
     return commentUpdate;
   }
 
-  async remove(id: number) {
+  async softDelete(id: number) {
     try{
       const comment = await this.commentRepository.softDelete(id);
       if(comment.affected === 0){
@@ -74,6 +84,8 @@ export class CommentService {
       }
       return { message: "Commentaire supprimé." };
     }catch(err){
+      console.log(err);
+      
       throw new NotFoundException(`Comment #${id} not found`);
     }
   }

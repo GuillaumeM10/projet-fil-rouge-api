@@ -1,6 +1,6 @@
 import { Timestamp } from "src/Generic/timestamp.entity";
 import { LinkEntity } from "src/link/entities/link.entity";
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('link_category')
 export class LinkCategoryEntity extends Timestamp {
@@ -13,12 +13,13 @@ export class LinkCategoryEntity extends Timestamp {
   })
   name: string
 
-  // @Column({
-  //   nullable: true,
-  //   unique: false
-  // })
-  // icon: string
+  @Column({
+    nullable: true,
+    unique: false
+  })
+  icon: string
 
   @OneToMany(() => LinkEntity, link => link.linkCategory)
+  @JoinColumn()
   links: LinkEntity[]
 }

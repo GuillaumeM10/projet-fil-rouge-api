@@ -43,6 +43,9 @@ export class UserService {
     const user = await this.userRepository
                     .createQueryBuilder('user')
                     .leftJoinAndSelect('user.userDetail', 'userDetail')
+                    .leftJoinAndSelect('user.comments', 'comments')
+                    .leftJoinAndSelect('user.replies', 'replies')
+                    .leftJoinAndSelect('user.posts', 'posts')
                     .where('user.id = :id', { id })
                     .getOne();
     if(user === null){

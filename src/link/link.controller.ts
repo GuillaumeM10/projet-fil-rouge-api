@@ -1,15 +1,21 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Put } from '@nestjs/common';
 import { LinkService } from './link.service';
 import { CreateLinkDto } from './dto/create-link.dto';
 import { UpdateLinkDto } from './dto/update-link.dto';
+import { JwtAuthGuard } from 'src/auth/guard/jwt-passport.guard';
+import { User } from 'src/decorator/user.decorator';
 
-@Controller('link')
+@Controller('links')
 export class LinkController {
   constructor(private readonly linkService: LinkService) {}
 
   @Post()
-  create(@Body() createLinkDto: CreateLinkDto) {
-    return this.linkService.create(createLinkDto);
+  @UseGuards(JwtAuthGuard)
+  create(
+    @Body() createLinkDto: CreateLinkDto,
+    @User() user
+  ) {
+    return this.linkService.create(createLinkDto, user);
   }
 
   @Get()
@@ -18,17 +24,24 @@ export class LinkController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(
+    @Param('id') id: string
+  ) {
     return this.linkService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateLinkDto: UpdateLinkDto) {
+  @Put(':id')
+  @UseGuards(JwtAuthGuard)
+  update(
+    @Param('id') id: string, 
+    @Body() updateLinkDto: UpdateLinkDto
+  ) {
     return this.linkService.update(+id, updateLinkDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.linkService.remove(+id);
+  @UseGuards(JwtAuthGuard)
+  softDelete(@Param('id') id: string) {
+    return this.linkService.softDelete(+id);
   }
 }

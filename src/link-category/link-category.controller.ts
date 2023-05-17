@@ -1,15 +1,21 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Put } from '@nestjs/common';
 import { LinkCategoryService } from './link-category.service';
 import { CreateLinkCategoryDto } from './dto/create-link-category.dto';
 import { UpdateLinkCategoryDto } from './dto/update-link-category.dto';
+import { JwtAuthGuard } from 'src/auth/guard/jwt-passport.guard';
+import { User } from 'src/decorator/user.decorator';
 
-@Controller('link-category')
+@Controller('link-categories')
 export class LinkCategoryController {
   constructor(private readonly linkCategoryService: LinkCategoryService) {}
 
   @Post()
-  create(@Body() createLinkCategoryDto: CreateLinkCategoryDto) {
-    return this.linkCategoryService.create(createLinkCategoryDto);
+  @UseGuards(JwtAuthGuard)
+  create(
+    @Body() createLinkCategoryDto: CreateLinkCategoryDto,
+    @User() user
+  ) {
+    return this.linkCategoryService.create(createLinkCategoryDto, user);
   }
 
   @Get()
@@ -18,17 +24,26 @@ export class LinkCategoryController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(
+    @Param('id') id: string
+  ) {
     return this.linkCategoryService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateLinkCategoryDto: UpdateLinkCategoryDto) {
+  @Put(':id')
+  @UseGuards(JwtAuthGuard)
+  update(
+    @Param('id') id: string, 
+    @Body() updateLinkCategoryDto: UpdateLinkCategoryDto
+  ) {
     return this.linkCategoryService.update(+id, updateLinkCategoryDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.linkCategoryService.remove(+id);
+  @UseGuards(JwtAuthGuard)
+  softDelete(
+    @Param('id') id: string
+  ) {
+    return this.linkCategoryService.softDelete(+id);
   }
 }

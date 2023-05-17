@@ -42,6 +42,7 @@ export class UserDetailService {
     const userDetails = await this.userDetailRepository
       .createQueryBuilder('userDetail')
       .leftJoinAndSelect('userDetail.skills', 'skills')
+      .leftJoinAndSelect('userDetail.links', 'links')
       // .leftJoinAndSelect('userDetail.experiences', 'experiences')
       // .leftJoinAndSelect('userDetail.uploadFiles', 'uploadFiles')
       .getMany();
@@ -58,6 +59,7 @@ export class UserDetailService {
     const userDetails = await this.userDetailRepository
       .createQueryBuilder('userDetail')
       .leftJoinAndSelect('userDetail.skills', 'skills')
+      .leftJoinAndSelect('userDetail.links', 'links')
       // .leftJoinAndSelect('userDetail.experiences', 'experiences')
       // .leftJoinAndSelect('userDetail.uploadFiles', 'uploadFiles')
       .where('userDetail.id = :id', { id })

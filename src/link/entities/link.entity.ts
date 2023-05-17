@@ -1,7 +1,7 @@
 import { LinkCategoryEntity } from "src/link-category/entities/link-category.entity";
 import { UserDetailEntity } from "src/user-detail/entities/user-detail.entity";
 import { Timestamp } from "src/Generic/timestamp.entity";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('link')
 export class LinkEntity extends Timestamp {
@@ -9,16 +9,16 @@ export class LinkEntity extends Timestamp {
   id: number;
 
   @Column({
-    nullable: true,
+    nullable: false,
     unique: false
   })
   name: string
 
   @Column({
-    nullable: true,
+    nullable: false,
     unique: false
   })
-  link: string
+  url: string
 
   @Column({
     nullable: true,
@@ -29,6 +29,10 @@ export class LinkEntity extends Timestamp {
   @ManyToOne(() => UserDetailEntity, user => user.links)
   user: UserDetailEntity
 
-  @ManyToOne(() => LinkCategoryEntity, linkCategory => linkCategory.links)
+  @ManyToOne(() => LinkCategoryEntity, linkCategory => linkCategory.links, {
+    onDelete: 'CASCADE',
+    nullable: true
+  })
+  @JoinColumn()
   linkCategory: LinkCategoryEntity
 }

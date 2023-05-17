@@ -1,10 +1,18 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateLinkCategoryDto } from './dto/create-link-category.dto';
 import { UpdateLinkCategoryDto } from './dto/update-link-category.dto';
+import { LinkCategoryEntity } from './entities/link-category.entity';
 
 @Injectable()
 export class LinkCategoryService {
-  create(createLinkCategoryDto: CreateLinkCategoryDto) {
+  constructor(
+    @InjectRepository(LinkCategoryEntity)
+    private linkCategoryRepository: Repository<LinkCategoryEntity>
+  ) {}
+
+  create(createLinkCategoryDto: CreateLinkCategoryDto, user) {
     return 'This action adds a new linkCategory';
   }
 
@@ -20,7 +28,7 @@ export class LinkCategoryService {
     return `This action updates a #${id} linkCategory`;
   }
 
-  remove(id: number) {
+  softDelete(id: number) {
     return `This action removes a #${id} linkCategory`;
   }
 }

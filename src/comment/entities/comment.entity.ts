@@ -2,7 +2,7 @@ import { Timestamp } from "src/Generic/timestamp.entity";
 import { PostEntity } from "src/post/entity/post.entity";
 import { ReplyEntity } from "src/reply/entities/reply.entity";
 import { UserEntity } from "src/user/entities/user.entity";
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('comment')  
 export class CommentEntity extends Timestamp{
@@ -28,5 +28,6 @@ export class CommentEntity extends Timestamp{
     cascade: true,
     nullable: true
   })
+  @JoinColumn()
   replies: ReplyEntity[]
 }

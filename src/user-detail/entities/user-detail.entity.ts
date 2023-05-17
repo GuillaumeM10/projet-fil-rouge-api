@@ -120,6 +120,7 @@ export class UserDetailEntity extends Timestamp {
     cascade: ["insert"],
     nullable: true
   })
+  @JoinColumn()
   links: LinkEntity[];
   
   @ManyToMany(() => CityEntity, city => city.users, {

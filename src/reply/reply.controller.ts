@@ -1,15 +1,21 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Put } from '@nestjs/common';
 import { ReplyService } from './reply.service';
 import { CreateReplyDto } from './dto/create-reply.dto';
 import { UpdateReplyDto } from './dto/update-reply.dto';
+import { JwtAuthGuard } from 'src/auth/guard/jwt-passport.guard';
+import { User } from 'src/decorator/user.decorator';
 
-@Controller('reply')
+@Controller('replies')
 export class ReplyController {
   constructor(private readonly replyService: ReplyService) {}
 
   @Post()
-  create(@Body() createReplyDto: CreateReplyDto) {
-    return this.replyService.create(createReplyDto);
+  @UseGuards(JwtAuthGuard)
+  create(
+    @Body() createReplyDto: CreateReplyDto,
+    @User() user
+  ) {
+    return this.replyService.create(createReplyDto, user);
   }
 
   @Get()
@@ -22,13 +28,15 @@ export class ReplyController {
     return this.replyService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Put(':id')
+  @UseGuards(JwtAuthGuard)
   update(@Param('id') id: string, @Body() updateReplyDto: UpdateReplyDto) {
     return this.replyService.update(+id, updateReplyDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.replyService.remove(+id);
+  @UseGuards(JwtAuthGuard)
+  softDelete(@Param('id') id: string) {
+    return this.replyService.softDelete(+id);
   }
 }
