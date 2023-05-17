@@ -1,26 +1,95 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateExperienceDto } from './dto/create-experience.dto';
 import { UpdateExperienceDto } from './dto/update-experience.dto';
+import { ExperienceEntity } from './entities/experience.entity';
 
 @Injectable()
 export class ExperienceService {
-  create(createExperienceDto: CreateExperienceDto) {
-    return 'This action adds a new experience';
+  constructor(
+    @InjectRepository(ExperienceEntity)
+    private readonly experienceRepository: Repository<ExperienceEntity>
+  ) {}
+
+  async create(createExperienceDto: CreateExperienceDto, user) {
+    try{
+      createExperienceDto.user = user.id;
+      return await this.experienceRepository.save(createExperienceDto);
+    }catch(err){
+      console.log(err);
+      return err.detail;
+    }
   }
 
-  findAll() {
-    return `This action returns all experience`;
+  async findAll() {
+    const experiences = await this.experienceRepository
+            .createQueryBuilder('experience')
+            .leftJoinAndSelect('experience.user', 'user', 'user.id = experience.userId')
+            .select([
+              'experience.id', 'experience.companieName', 'experience.jobName', 'experience.startDate', 'experience.endDate', 'experience.actualyIn', 'experience.type', 'experience.deletedAt', 'experience.updatedAt', 'experience.createdAt',
+              'user.id'
+            ])
+            .orderBy('experience.id', 'DESC')
+            .getMany();
+
+        return experiences;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} experience`;
+  async findOne(id: number) {
+    const experience = await this.experienceRepository
+            .createQueryBuilder('experience')
+            .leftJoinAndSelect('experience.user', 'user', 'user.id = experience.userId')
+            .select([
+              'experience.id', 'experience.companieName', 'experience.jobName', 'experience.startDate', 'experience.endDate', 'experience.actualyIn', 'experience.type', 'experience.deletedAt', 'experience.updatedAt', 'experience.createdAt',
+              'user.id'
+            ])
+            .where('experience.id = :id', { id })
+            .getOne();
+
+    if(experience !== null){
+      return experience;    
+    }else{
+      throw new NotFoundException(`Experience #${id} not found`);
+    }
   }
 
-  update(id: number, updateExperienceDto: UpdateExperienceDto) {
-    return `This action updates a #${id} experience`;
+  async update(id: number, updateExperienceDto: UpdateExperienceDto, user) {
+    console.log(id);
+    const experience = await this.findOne(id);
+    
+    if(experience !== null){
+      if(experience.user.id === user.id){
+
+        const updatedExperience = { ...experience, ...updateExperienceDto };
+        console.log(updatedExperience);
+        
+
+        return await this.experienceRepository.save(updatedExperience);
+
+      }else{
+
+        return { message : 'You are not authorized to update this experience' }
+
+      }
+    }else{
+      throw new NotFoundException(`Experience #${id} not found`);
+    }
+
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} experience`;
+  async softDelete(id: number, user) {
+    const experience = await this.findOne(id);
+
+    if(experience !== null){
+      if(experience.user.id === user.id){
+        await this.experienceRepository.softDelete(id);
+        return { message : 'Experience supprimé.' } 
+      }else{
+        return { message : 'You are not authorized to delete this experience' }
+      }
+    }else{
+      throw new NotFoundException(`Experience #${id} not found`);
+    }
   }
 }

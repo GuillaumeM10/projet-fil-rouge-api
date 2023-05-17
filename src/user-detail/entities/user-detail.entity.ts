@@ -114,6 +114,7 @@ export class UserDetailEntity extends Timestamp {
     cascade: ["insert"],
     nullable: true
   })
+  @JoinColumn()
   experiences: ExperienceEntity[];
   
   @OneToMany(() => LinkEntity, link => link.user, {

@@ -44,7 +44,7 @@ export class UserDetailService {
       .leftJoinAndSelect('userDetail.skills', 'skills')
       .leftJoinAndSelect('userDetail.links', 'links')
       .leftJoinAndSelect('userDetail.cities', 'cities')
-      // .leftJoinAndSelect('userDetail.experiences', 'experiences')
+      .leftJoinAndSelect('userDetail.experiences', 'experiences')
       // .leftJoinAndSelect('userDetail.uploadFiles', 'uploadFiles')
       .getMany();
 
@@ -62,7 +62,7 @@ export class UserDetailService {
       .leftJoinAndSelect('userDetail.skills', 'skills')
       .leftJoinAndSelect('userDetail.links', 'links')
       .leftJoinAndSelect('userDetail.cities', 'cities')
-      // .leftJoinAndSelect('userDetail.experiences', 'experiences')
+      .leftJoinAndSelect('userDetail.experiences', 'experiences')
       // .leftJoinAndSelect('userDetail.uploadFiles', 'uploadFiles')
       .where('userDetail.id = :id', { id })
       .getOne();

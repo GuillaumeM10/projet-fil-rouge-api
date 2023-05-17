@@ -1,6 +1,6 @@
 import { Timestamp } from "src/Generic/timestamp.entity";
 import { UserDetailEntity } from "src/user-detail/entities/user-detail.entity";
-import { Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('experience')
 export class ExperienceEntity extends Timestamp {
@@ -33,7 +33,8 @@ export class ExperienceEntity extends Timestamp {
 
   @Column({
     nullable: true,
-    unique: false
+    unique: false,
+    default: false
   })
   actualyIn: boolean
 
@@ -43,6 +44,12 @@ export class ExperienceEntity extends Timestamp {
   })
   type: string
 
-  @ManyToOne(() => UserDetailEntity, user => user.experiences)
+  @ManyToOne(() => UserDetailEntity, user => user.experiences, {
+    onDelete: 'CASCADE',
+    cascade: ["insert"],
+    nullable: true
+  })
+  @JoinColumn()
   user: UserDetailEntity
+  
 }
