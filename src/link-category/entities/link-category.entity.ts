@@ -9,7 +9,7 @@ export class LinkCategoryEntity extends Timestamp {
 
   @Column({
     nullable: true,
-    unique: false
+    unique: true
   })
   name: string
 

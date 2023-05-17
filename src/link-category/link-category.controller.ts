@@ -34,16 +34,18 @@ export class LinkCategoryController {
   @UseGuards(JwtAuthGuard)
   update(
     @Param('id') id: string, 
-    @Body() updateLinkCategoryDto: UpdateLinkCategoryDto
+    @Body() updateLinkCategoryDto: UpdateLinkCategoryDto,
+    @User() user
   ) {
-    return this.linkCategoryService.update(+id, updateLinkCategoryDto);
+    return this.linkCategoryService.update(+id, updateLinkCategoryDto, user);
   }
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   softDelete(
-    @Param('id') id: string
+    @Param('id') id: string,
+    @User() user
   ) {
-    return this.linkCategoryService.softDelete(+id);
+    return this.linkCategoryService.softDelete(+id, user);
   }
 }

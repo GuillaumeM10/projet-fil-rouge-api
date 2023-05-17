@@ -31,7 +31,8 @@ export class LinkEntity extends Timestamp {
 
   @ManyToOne(() => LinkCategoryEntity, linkCategory => linkCategory.links, {
     onDelete: 'CASCADE',
-    nullable: true
+    cascade: ["insert"],
+    nullable: false
   })
   @JoinColumn()
   linkCategory: LinkCategoryEntity

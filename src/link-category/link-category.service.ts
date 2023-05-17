@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateLinkCategoryDto } from './dto/create-link-category.dto';
@@ -9,26 +9,96 @@ import { LinkCategoryEntity } from './entities/link-category.entity';
 export class LinkCategoryService {
   constructor(
     @InjectRepository(LinkCategoryEntity)
-    private linkCategoryRepository: Repository<LinkCategoryEntity>
+    private readonly linkCategoryRepository: Repository<LinkCategoryEntity>
   ) {}
 
-  create(createLinkCategoryDto: CreateLinkCategoryDto, user) {
-    return 'This action adds a new linkCategory';
+  async create(createLinkCategoryDto: CreateLinkCategoryDto, user) {
+    try{
+
+      if(user.role === 'admin') {
+        console.log(user.role);
+        
+        return await this.linkCategoryRepository.save(createLinkCategoryDto)
+      }else{
+        return {message: 'You are not authorized to perform this action'};
+      }
+    }catch(error){
+      console.log(error);
+      return error.detail;
+    }
   }
 
-  findAll() {
-    return `This action returns all linkCategory`;
+  async findAll() {
+    const linkCategories = await this.linkCategoryRepository
+            .createQueryBuilder('linkCategory')
+            .leftJoinAndSelect('linkCategory.links', 'links')
+            .select([
+              'linkCategory.id', 'linkCategory.name', 'linkCategory.icon', 'linkCategory.deletedAt', 'linkCategory.updatedAt', 'linkCategory.createdAt',
+              'links.id', 'links.name', 'links.url'
+            ])
+            .orderBy('linkCategory.id', 'DESC')
+            .getMany();
+
+    try{
+      return linkCategories;
+    }catch(error){
+      console.log(error);
+      return error.detail;
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} linkCategory`;
+  async findOne(id: number) {
+    const linkCategory = await this.linkCategoryRepository
+            .createQueryBuilder('linkCategory')
+            .leftJoinAndSelect('linkCategory.links', 'links')
+            .select([
+              'linkCategory.id', 'linkCategory.name', 'linkCategory.icon', 'linkCategory.deletedAt', 'linkCategory.updatedAt', 'linkCategory.createdAt',
+              'links.id', 'links.name', 'links.url'
+            ])
+            .where('linkCategory.id = :id', { id })
+            .getOne();
+
+    if(linkCategory !== null){
+      return linkCategory;    
+    }else{
+      throw new NotFoundException(`Link #${id} not found`);
+    }
   }
 
-  update(id: number, updateLinkCategoryDto: UpdateLinkCategoryDto) {
-    return `This action updates a #${id} linkCategory`;
+  async update(id: number, updateLinkCategoryDto: UpdateLinkCategoryDto, user) {
+    const linkCategory = await this.findOne(id);
+    const updatedLinkCategory =  { ...linkCategory, ...updateLinkCategoryDto };
+
+    if(user.role === 'admin') {
+      try{
+        await this.linkCategoryRepository.save(updatedLinkCategory);
+      }catch(error){
+        console.log(error);
+        return error.detail;
+      }
+    }else{
+      return {message: 'You are not authorized to perform this action'};
+    }
+
+    return updatedLinkCategory;
   }
 
-  softDelete(id: number) {
-    return `This action removes a #${id} linkCategory`;
+  async softDelete(id: number, user) {
+    const linkCategory = await this.findOne(id);
+
+    if(!linkCategory){
+      return {message: `LinkCategory #${id} not found`};
+    }
+
+    if(user.role === 'admin') {
+
+        await this.linkCategoryRepository.softDelete(linkCategory);
+
+    }else{
+      return {message: 'You are not authorized to perform this action'};
+    }
+
+    return { message: `Catégorie de lien suppimé.`};
+
   }
 }
