@@ -2,21 +2,20 @@ import { Controller, Get, Post, Body, Param, Delete, Put, ParseIntPipe, UseInter
 import { UserDetailService } from './user-detail.service';
 import { CreateUserDetailDto } from './dto/create-user-detail.dto';
 import { UpdateUserDetailDto } from './dto/update-user-detail.dto';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { FileFieldsInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-passport.guard';
 import { User } from 'src/decorator/user.decorator';
+import { Express } from 'express';
 
 @Controller('users-details')
 export class UserDetailController {
   constructor(private readonly userDetailService: UserDetailService) {}
 
   @Post()
-  @UseInterceptors(FilesInterceptor('files'))
   create(
-    @Body() createUserDetailDto: CreateUserDetailDto,
-    @UploadedFiles() files
+    @Body() createUserDetailDto: CreateUserDetailDto
   ) {
-    return this.userDetailService.create(createUserDetailDto, files);
+    return this.userDetailService.create(createUserDetailDto);
   }
 
   @Get()
@@ -33,12 +32,20 @@ export class UserDetailController {
 
   @Put(':id')
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FilesInterceptor('files'))
+  @UseInterceptors(FileFieldsInterceptor([
+    {name: 'files'},
+    {name: 'cv'},
+    {name: 'banner'}
+  ]))
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateUserDetailDto: UpdateUserDetailDto,
     @User() user,
-    @UploadedFiles() files
+    @UploadedFiles() files: {
+      files?: Express.Multer.File[],
+      cv?: Express.Multer.File[],
+      banner?: Express.Multer.File[]
+    }
   ) {
     return this.userDetailService.update(+id, updateUserDetailDto, user, files);
   }

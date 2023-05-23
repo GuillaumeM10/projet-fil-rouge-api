@@ -47,6 +47,7 @@ import { ReplyModule } from './reply/reply.module';
     LinkModule,
     LinkCategoryModule,
     ExperienceModule,
+    FileModule,
   ],
   controllers: [AppController],
   providers: [AppService],

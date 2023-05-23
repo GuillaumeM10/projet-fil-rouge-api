@@ -75,7 +75,7 @@ export class PostService {
     }
     
     async createPost(data: PostCreateDto, user, files) {
-        // console.log('files', files);
+        console.log('files', files);
         
         if (files !== undefined) {
             let filesData = await Promise.all(files.map(async file => {

@@ -14,28 +14,12 @@ export class UserDetailService {
     private readonly uploadFileService: UploadFileService
   ){}
 
-  async create(createUserDetailDto: CreateUserDetailDto, files: any) {
-
-    // console.log(files);
-    
-
-    if (files !== undefined) {
-      if(files && files.length > 0){
-        files.forEach(file => {
-          console.log(file);
-        });
-      }
-
-      createUserDetailDto.uploadFiles = files;
-    }
-
-    try{
-      return await this.userDetailRepository.save(createUserDetailDto);
+  async create(createUserDetailDto: CreateUserDetailDto) {
+    try{    
+      return await this.userDetailRepository.save(createUserDetailDto)
     }catch(error){
       console.log(error);
     }
-
-    // return await this.userDetailRepository.save(createUserDetailDto);
   }
 
   async findAll() {
@@ -45,7 +29,9 @@ export class UserDetailService {
       .leftJoinAndSelect('userDetail.links', 'links')
       .leftJoinAndSelect('userDetail.cities', 'cities')
       .leftJoinAndSelect('userDetail.experiences', 'experiences')
-      // .leftJoinAndSelect('userDetail.uploadFiles', 'uploadFiles')
+      .leftJoinAndSelect('userDetail.files', 'files')
+      .leftJoinAndSelect('userDetail.cv', 'uploadFiles')
+      .leftJoinAndSelect('userDetail.banner', 'uploadFiles')
       .getMany();
 
     return userDetails;
@@ -63,31 +49,55 @@ export class UserDetailService {
       .leftJoinAndSelect('userDetail.links', 'links')
       .leftJoinAndSelect('userDetail.cities', 'cities')
       .leftJoinAndSelect('userDetail.experiences', 'experiences')
-      // .leftJoinAndSelect('userDetail.uploadFiles', 'uploadFiles')
+      .leftJoinAndSelect('userDetail.files', 'files')
+      .leftJoinAndSelect('userDetail.cv', 'cv')
+      .leftJoinAndSelect('userDetail.banner', 'banner')
       .where('userDetail.id = :id', { id })
       .getOne();
 
     return userDetails;
+    // return await this.userDetailRepository.findOneBy({ id });
   }
 
-  async update(id: number, updateUserDetailDto: UpdateUserDetailDto, user, files: any) {
+  async update(id: number, updateUserDetailDto: UpdateUserDetailDto, user, files) {
     const userDetail = await this.userDetailRepository.findOneBy({id});
-    const userDetailUpdate = { ...userDetail, ...updateUserDetailDto };
+    let userDetailUpdate = { ...userDetail, ...updateUserDetailDto };
 
     if (!userDetail) {
       throw new NotFoundException(`UserDetail #${id} not found`);
     }
-
-    // console.log(id);
+    // console.log(id)
+    // console.log(updateUserDetailDto)
+    // console.log(user)
+    // console.log('files', files)
     
-    if (files !== undefined) {
-      let filesData = await Promise.all(files.map(async file => {
+    // if (files !== undefined) {
+      // console.log('files', files.banner);
+      
+      if(files?.cv){
+        const cv = await this.uploadFileService.create(files.cv[0], user);
+        // console.log('cv', cv);
+
+        userDetailUpdate.cv = cv;
+      }
+      if(files?.banner){
+        const banner = await this.uploadFileService.create(files.banner[0], user);
+        // console.log('banner', banner);
+        
+        userDetailUpdate.banner = banner;
+      }
+      if(files.personalPicture){
+        const personalPicture = await this.uploadFileService.create(files.personalPicture, user);
+        userDetailUpdate.personalPicture = personalPicture;
+      }
+      if(files.files){
+        const filesData = await Promise.all(files.files.map(async file => {
           const uploadFile = await this.uploadFileService.create(file, user);
           return uploadFile;
-      }));
-      
-      userDetailUpdate.uploadFiles = filesData;
-    }
+        }));
+        userDetailUpdate.files = filesData;
+      }
+    // }
 
     
     try{

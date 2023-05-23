@@ -2,6 +2,7 @@ import { CityEntity } from "src/city/entities/city.entity";
 import { ExperienceEntity } from "src/experience/entities/experience.entity";
 import { LinkEntity } from "src/link/entities/link.entity";
 import { SkillEntity } from "src/skill/entities/skill.entity";
+import { UploadFileEntity } from "src/upload-file/entities/upload-file.entity";
 import { UserEntity } from "src/user/entities/user.entity";
 
 export class CreateUserDetailDto {
@@ -21,7 +22,7 @@ export class CreateUserDetailDto {
   banner?: any;
   personalPicture?: any;
   cv?: any;
-  uploadFiles?: any[];
+  files?: any[];
   experiences?: ExperienceEntity[];
   // links?: LinkEntity[];
   cities?: CityEntity[];

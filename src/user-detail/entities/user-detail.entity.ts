@@ -1,5 +1,6 @@
 import { CityEntity } from "src/city/entities/city.entity";
 import { ExperienceEntity } from "src/experience/entities/experience.entity";
+import { FileEntity } from "src/file/entities/file.entity";
 import { Timestamp } from "src/Generic/timestamp.entity";
 import { LinkEntity } from "src/link/entities/link.entity";
 import { SkillEntity } from "src/skill/entities/skill.entity";
@@ -83,32 +84,31 @@ export class UserDetailEntity extends Timestamp {
   skills: SkillEntity[];
   
   @OneToOne(() => UploadFileEntity, {
-    cascade: true,
+    cascade: ["insert"],
     nullable: true
   })
   @JoinColumn()
   banner: UploadFileEntity;
 
   @OneToOne(() => UploadFileEntity, {
-    cascade: true,
+    cascade: ["insert"],
     nullable: true
   })
   @JoinColumn()
   personalPicture: UploadFileEntity;
 
   @OneToOne(() => UploadFileEntity, {
-    cascade: true,
+    cascade: ["insert"],
     nullable: true
   })
   @JoinColumn()
   cv: UploadFileEntity;
 
-  @OneToMany(() => UploadFileEntity, uploadFile => uploadFile.userDetail, {
-    cascade: true,
+  @ManyToMany(() => UploadFileEntity, uploadFile => uploadFile.userDetails, {
+    cascade: ["insert"],
     nullable: true
   })
-  @JoinColumn()
-  uploadFiles: UploadFileEntity[];
+  files: UploadFileEntity[];
   
   @OneToMany(() => ExperienceEntity, experience => experience.user, {
     cascade: ["insert"],

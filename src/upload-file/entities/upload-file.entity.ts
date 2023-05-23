@@ -1,7 +1,8 @@
+import { FileEntity } from "src/file/entities/file.entity";
 import { Timestamp } from "src/Generic/timestamp.entity";
 import { PostEntity } from "src/post/entity/post.entity";
 import { UserDetailEntity } from "src/user-detail/entities/user-detail.entity";
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToOne } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToOne, ManyToMany } from "typeorm";
 
 @Entity('uploadFile')
 export class UploadFileEntity extends Timestamp {
@@ -36,9 +37,9 @@ export class UploadFileEntity extends Timestamp {
     })
     post: PostEntity;
 
-    @ManyToOne(() => UserDetailEntity, user => user.uploadFiles, {
-        nullable: true,
-    })
-    userDetail: UserDetailEntity;
+    @ManyToMany(() => UserDetailEntity, user => user.files)
+    userDetails: UserDetailEntity[];
+
+
 
 }
