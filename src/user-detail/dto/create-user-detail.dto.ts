@@ -22,7 +22,7 @@ export class CreateUserDetailDto {
   banner?: any;
   personalPicture?: any;
   cv?: any;
-  files?: any[];
+  files?: UploadFileEntity[];
   experiences?: ExperienceEntity[];
   // links?: LinkEntity[];
   cities?: CityEntity[];

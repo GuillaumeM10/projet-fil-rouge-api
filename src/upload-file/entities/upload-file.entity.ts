@@ -1,4 +1,3 @@
-import { FileEntity } from "src/file/entities/file.entity";
 import { Timestamp } from "src/Generic/timestamp.entity";
 import { PostEntity } from "src/post/entity/post.entity";
 import { UserDetailEntity } from "src/user-detail/entities/user-detail.entity";

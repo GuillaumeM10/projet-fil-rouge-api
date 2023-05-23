@@ -1,6 +1,5 @@
 import { CityEntity } from "src/city/entities/city.entity";
 import { ExperienceEntity } from "src/experience/entities/experience.entity";
-import { FileEntity } from "src/file/entities/file.entity";
 import { Timestamp } from "src/Generic/timestamp.entity";
 import { LinkEntity } from "src/link/entities/link.entity";
 import { SkillEntity } from "src/skill/entities/skill.entity";
@@ -105,9 +104,9 @@ export class UserDetailEntity extends Timestamp {
   cv: UploadFileEntity;
 
   @ManyToMany(() => UploadFileEntity, uploadFile => uploadFile.userDetails, {
-    cascade: ["insert"],
-    nullable: true
+    cascade: ["insert"]
   })
+  @JoinTable()
   files: UploadFileEntity[];
   
   @OneToMany(() => ExperienceEntity, experience => experience.user, {

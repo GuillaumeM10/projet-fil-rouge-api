@@ -34,7 +34,7 @@ export class UploadFileService {
   }
   
   async uploadFileAws(user, fileData){
-    console.log(fileData.originalname);
+    // console.log(fileData.originalname);
     
     const fileName = `${Date.now()}.${fileData.originalname.split('.').pop()}`
     

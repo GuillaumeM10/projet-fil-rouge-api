@@ -9,7 +9,6 @@ import { UserModule } from './user/user.module';
 import { UserDetailModule } from './user-detail/user-detail.module';
 import { SkillModule } from './skill/skill.module';
 import { LinkModule } from './link/link.module';
-import { FileModule } from './file/file.module';
 import { ExperienceModule } from './experience/experience.module';
 import { LinkCategoryModule } from './link-category/link-category.module';
 import { MailModule } from './mail/mail.module';
@@ -47,7 +46,6 @@ import { ReplyModule } from './reply/reply.module';
     LinkModule,
     LinkCategoryModule,
     ExperienceModule,
-    FileModule,
   ],
   controllers: [AppController],
   providers: [AppService],

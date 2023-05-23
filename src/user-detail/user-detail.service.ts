@@ -56,7 +56,6 @@ export class UserDetailService {
       .getOne();
 
     return userDetails;
-    // return await this.userDetailRepository.findOneBy({ id });
   }
 
   async update(id: number, updateUserDetailDto: UpdateUserDetailDto, user, files) {
@@ -66,38 +65,30 @@ export class UserDetailService {
     if (!userDetail) {
       throw new NotFoundException(`UserDetail #${id} not found`);
     }
-    // console.log(id)
-    // console.log(updateUserDetailDto)
-    // console.log(user)
-    // console.log('files', files)
-    
-    // if (files !== undefined) {
-      // console.log('files', files.banner);
       
-      if(files?.cv){
-        const cv = await this.uploadFileService.create(files.cv[0], user);
-        // console.log('cv', cv);
+    if(files?.cv){
+      const cv = await this.uploadFileService.create(files.cv[0], user);
+      console.log("upload CV");
 
-        userDetailUpdate.cv = cv;
-      }
-      if(files?.banner){
-        const banner = await this.uploadFileService.create(files.banner[0], user);
-        // console.log('banner', banner);
-        
-        userDetailUpdate.banner = banner;
-      }
-      if(files.personalPicture){
-        const personalPicture = await this.uploadFileService.create(files.personalPicture, user);
-        userDetailUpdate.personalPicture = personalPicture;
-      }
-      if(files.files){
-        const filesData = await Promise.all(files.files.map(async file => {
-          const uploadFile = await this.uploadFileService.create(file, user);
-          return uploadFile;
-        }));
-        userDetailUpdate.files = filesData;
-      }
-    // }
+      userDetailUpdate.cv = cv;
+    }
+    if(files?.banner){
+      const banner = await this.uploadFileService.create(files.banner[0], user);
+      userDetailUpdate.banner = banner;
+    }
+    if(files.personalPicture){
+      const personalPicture = await this.uploadFileService.create(files.personalPicture, user);
+      userDetailUpdate.personalPicture = personalPicture;
+    }
+    if(files.files){
+
+      const filesData = await Promise.all(files.files.map(async file => {
+        const uploadFile = await this.uploadFileService.create(file, user);
+        return uploadFile;
+      }));
+      userDetailUpdate.files = filesData;
+
+    }
 
     
     try{
