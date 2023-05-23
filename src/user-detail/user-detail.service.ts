@@ -30,6 +30,7 @@ export class UserDetailService {
       .leftJoinAndSelect('userDetail.cities', 'cities')
       .leftJoinAndSelect('userDetail.experiences', 'experiences')
       .leftJoinAndSelect('userDetail.files', 'files')
+      .leftJoinAndSelect('userDetail.personalPicture', 'personalPicture')
       .leftJoinAndSelect('userDetail.cv', 'uploadFiles')
       .leftJoinAndSelect('userDetail.banner', 'uploadFiles')
       .getMany();
@@ -51,6 +52,7 @@ export class UserDetailService {
       .leftJoinAndSelect('userDetail.experiences', 'experiences')
       .leftJoinAndSelect('userDetail.files', 'files')
       .leftJoinAndSelect('userDetail.cv', 'cv')
+      .leftJoinAndSelect('userDetail.personalPicture', 'personalPicture')
       .leftJoinAndSelect('userDetail.banner', 'banner')
       .where('userDetail.id = :id', { id })
       .getOne();
@@ -77,7 +79,7 @@ export class UserDetailService {
       userDetailUpdate.banner = banner;
     }
     if(files.personalPicture){
-      const personalPicture = await this.uploadFileService.create(files.personalPicture, user);
+      const personalPicture = await this.uploadFileService.create(files.personalPicture[0], user);
       userDetailUpdate.personalPicture = personalPicture;
     }
     if(files.files){

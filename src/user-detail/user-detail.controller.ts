@@ -35,7 +35,8 @@ export class UserDetailController {
   @UseInterceptors(FileFieldsInterceptor([
     {name: 'files'},
     {name: 'cv'},
-    {name: 'banner'}
+    {name: 'banner'},
+    {name: 'personalPicture'}
   ]))
   update(
     @Param('id', ParseIntPipe) id: number,
@@ -44,7 +45,8 @@ export class UserDetailController {
     @UploadedFiles() files: {
       files?: Express.Multer.File[],
       cv?: Express.Multer.File[],
-      banner?: Express.Multer.File[]
+      banner?: Express.Multer.File[],
+      personalPicture?: Express.Multer.File[]
     }
   ) {
     return this.userDetailService.update(+id, updateUserDetailDto, user, files);
