@@ -52,7 +52,7 @@ export class UserDetailEntity extends Timestamp {
   address: string;
 
   @Column({
-    nullable: false,
+    nullable: true,
     unique: false
   })
   country: string;
@@ -64,7 +64,7 @@ export class UserDetailEntity extends Timestamp {
   phone: string;
 
   @Column({
-    nullable: false,
+    nullable: true,
     unique: false
   })
   status: string; 
