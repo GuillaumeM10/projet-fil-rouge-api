@@ -40,6 +40,12 @@ export class PostService {
         //         .where('categories.name IN (:...categories)', { categories: categories.split(',') })
         // }
         
+        if(page && limit) {
+            query
+                .limit(limit)
+                .offset((page - 1) * limit)
+        }
+
         if(author !== undefined) {
             query
                 .where('author.id = :author', { author })
@@ -51,6 +57,7 @@ export class PostService {
                             .orderBy('post.id', 'DESC')
                             .getMany();
 
+        // example of api request: http://localhost:3000/posts?limit=2&page=1&author=1
         return postList;
     }
     async getOnePostById(id: number) {
@@ -89,6 +96,7 @@ export class PostService {
         
         try {
             data.userId = +user.id;
+            data.author = user;
             return await this.postRepository.save(data);
         } catch (error) {
             console.log(error);

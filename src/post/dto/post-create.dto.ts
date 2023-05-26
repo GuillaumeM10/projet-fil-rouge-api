@@ -1,3 +1,5 @@
+import { UserEntity } from "src/user/entities/user.entity";
+
 export class PostCreateDto {
   title: string;
   description?: string;
@@ -5,5 +7,6 @@ export class PostCreateDto {
   categories?: Array<any>;
   published?: boolean;
   userId?: number;
+  author?: UserEntity;
   uploadFiles?: any[];
 }
