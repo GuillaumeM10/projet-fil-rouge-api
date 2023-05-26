@@ -35,7 +35,8 @@ export class PostEntity extends Timestamp{
 
   @OneToMany(() => UploadFileEntity, uploadFile => uploadFile.post, {
     cascade: true,
-    nullable: true
+    nullable: true,
+    onDelete: "CASCADE"
   })
   @JoinColumn()
   uploadFiles: UploadFileEntity[];

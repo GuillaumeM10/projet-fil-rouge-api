@@ -99,8 +99,10 @@ export class PostService {
             data.author = user;
             return await this.postRepository.save(data);
         } catch (error) {
+
             console.log(error);
             return error['detail'];
+
         }
     }
     async updatePost(id: number, data: PostUpdateDto, user, files) {     
@@ -129,12 +131,17 @@ export class PostService {
         }
     }
     async softDeletePost(id: number) {
-        const postToRemove = await this.postRepository.softDelete(id);
+        const getPost = await this.getOnePostById( id );
+
+        console.log('getPost', getPost);
         
-        if(!postToRemove.affected) {
+        if (!getPost) {
             throw new NotFoundException(`Le post d'id ${id} n'existe pas.`);
+        }else if(getPost.deletedAt === null) {
+            throw new NotFoundException(`Le post d'id ${id} a déjà été supprimé.`);
         }else{
-            return { message: 'Post supprimé.' };
+            const postToRemove = await this.postRepository.softDelete(id);
+            return { message: 'Post supprimé.', 'req': postToRemove };
         }
     }
 }

@@ -33,6 +33,7 @@ export class UploadFileEntity extends Timestamp {
 
     @ManyToOne(() => PostEntity, post => post.uploadFiles, {
         nullable: true,
+        onDelete: 'CASCADE'
     })
     post: PostEntity;
 
