@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CityService } from 'src/city/city.service';
 import { UploadFileService } from 'src/upload-file/upload-file.service';
 import { Repository } from 'typeorm';
 import { CreateUserDetailDto } from './dto/create-user-detail.dto';
@@ -11,7 +12,8 @@ export class UserDetailService {
   constructor(
     @InjectRepository(UserDetailEntity)
     private readonly userDetailRepository: Repository<UserDetailEntity>,
-    private readonly uploadFileService: UploadFileService
+    private readonly uploadFileService: UploadFileService,
+    private readonly CityService: CityService
   ){}
 
   async create(createUserDetailDto: CreateUserDetailDto) {
@@ -31,8 +33,8 @@ export class UserDetailService {
       .leftJoinAndSelect('userDetail.experiences', 'experiences')
       .leftJoinAndSelect('userDetail.files', 'files')
       .leftJoinAndSelect('userDetail.personalPicture', 'personalPicture')
-      .leftJoinAndSelect('userDetail.cv', 'uploadFiles')
-      .leftJoinAndSelect('userDetail.banner', 'uploadFiles')
+      .leftJoinAndSelect('userDetail.cv', 'cv')
+      .leftJoinAndSelect('userDetail.banner', 'banner')
       .getMany();
 
     return userDetails;
@@ -78,11 +80,11 @@ export class UserDetailService {
       const banner = await this.uploadFileService.create(files.banner[0], user);
       userDetailUpdate.banner = banner;
     }
-    if(files.personalPicture){
+    if(files?.personalPicture){
       const personalPicture = await this.uploadFileService.create(files.personalPicture[0], user);
       userDetailUpdate.personalPicture = personalPicture;
     }
-    if(files.files){
+    if(files?.files){
 
       const filesData = await Promise.all(files.files.map(async file => {
         const uploadFile = await this.uploadFileService.create(file, user);
@@ -105,11 +107,21 @@ export class UserDetailService {
         throw new NotFoundException(`Status #${status} not found`);
       }
     }
-    
+
+    if(updateUserDetailDto.cities){
+      await Promise.all(updateUserDetailDto.cities.map(async (city, index) => {
+        const cityData = await this.CityService.findAll({name: city.name});
+        
+        if(cityData[0]?.name === city.name){
+          const id = cityData[0].id;
+          userDetailUpdate.cities[index] = {"id": id};
+        }
+      }));
+    }
+
     try{
       return await this.userDetailRepository.save(userDetailUpdate);
     }catch(error){
-      console.log("error", error);
       return error['detail'];
     }
 

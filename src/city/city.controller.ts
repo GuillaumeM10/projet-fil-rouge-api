@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put, UseGuards, Query } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-passport.guard';
 import { User } from 'src/decorator/user.decorator';
 import { CityService } from './city.service';
@@ -18,8 +18,10 @@ export class CityController {
   }
 
   @Get()
-  findAll() {
-    return this.cityService.findAll();
+  findAll(
+    @Query() queries
+  ) {
+    return this.cityService.findAll(queries);
   }
 
   @Get(':id')

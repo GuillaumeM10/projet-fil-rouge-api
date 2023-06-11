@@ -21,9 +21,27 @@ export class CityService {
     }
   }
 
-  async findAll() {
-    const cities = await this.cityRepository.find();
-    return cities;
+  async findAll(queries) {
+    // const cities = await this.cityRepository.find();
+    // return cities;
+
+    let { name } = queries;
+
+    const query = await this.cityRepository
+      .createQueryBuilder('city')
+      .leftJoinAndSelect('city.users', 'users')
+      
+    if(name){
+      query.andWhere('city.name = :name', { name });
+    }
+
+    try{
+      const cities = await query.getMany();
+      return cities;
+    }catch(err){
+      throw new NotFoundException(`no cities found`);
+    }
+
   }
 
   async findOne(id: number) {
@@ -32,6 +50,15 @@ export class CityService {
       return city;
     }else{
       throw new NotFoundException(`City #${id} not found`);
+    }
+  }
+
+  async findOneByName(name: string) {
+    const city = await this.cityRepository.findOneBy({name});
+    if(city !== null){
+      return city;
+    }else{
+      throw new NotFoundException(`City ${name} not found`);
     }
   }
 

@@ -3,6 +3,7 @@ import { UserDetailEntity } from 'src/user-detail/entities/user-detail.entity';
 import { CreateCityDto } from './create-city.dto';
 
 export class UpdateCityDto extends PartialType(CreateCityDto) {
+  id?: number;
   name?: string;
   users?: UserDetailEntity[];
 }
