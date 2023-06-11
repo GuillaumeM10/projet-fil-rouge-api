@@ -45,11 +45,11 @@ export class UserDetailEntity extends Timestamp {
   })
   description: string;
   
-  @Column({
-    nullable: true,
-    unique: false
-  })
-  address: string;
+  // @Column({
+  //   nullable: true,
+  //   unique: false
+  // })
+  // address: string;
 
   @Column({
     nullable: true,
@@ -67,7 +67,7 @@ export class UserDetailEntity extends Timestamp {
     nullable: true,
     unique: false
   })
-  status: string; 
+  status: string;
 
   @Column({
     nullable: true,

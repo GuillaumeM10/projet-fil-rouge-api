@@ -31,6 +31,10 @@ import { ReplyModule } from './reply/reply.module';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
       autoLoadEntities: true,
+      // extra: {
+      //   min: 2,
+      //   max: 5
+      // }
     }),
     AuthModule,
     UserModule,

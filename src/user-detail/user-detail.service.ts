@@ -91,7 +91,20 @@ export class UserDetailService {
       userDetailUpdate.files = filesData;
 
     }
-
+    const status = updateUserDetailDto.status;
+    if(status){
+      const enabledValue = [
+        "Etudiant",
+        "Alternant",
+        "Freelance",
+        "Demandeur emploi",
+        "Salarié",
+        "Autre"
+      ]
+      if(!enabledValue.includes(status)){
+        throw new NotFoundException(`Status #${status} not found`);
+      }
+    }
     
     try{
       return await this.userDetailRepository.save(userDetailUpdate);
