@@ -17,6 +17,7 @@ export class UpdateUserDetailDto extends PartialType(CreateUserDetailDto) {
   address?: string;
   country?: string;
   phone?: string;
+  profilComplet?: boolean;
   status?: string;
   range?: number;
   // skills?: SkillEntity[];

@@ -13,6 +13,7 @@ export class CreateUserDetailDto {
   contactEmail?: string;
   displayedOnFeed?: boolean;
   description?: string;
+  profilComplet?: boolean;
   address?: string;
   country?: string;
   phone?: string;

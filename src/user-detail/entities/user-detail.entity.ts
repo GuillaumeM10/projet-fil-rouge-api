@@ -35,6 +35,12 @@ export class UserDetailEntity extends Timestamp {
 
   @Column({
     nullable: true,
+    default: false
+  })
+  profilComplet: boolean;
+
+  @Column({
+    nullable: true,
     default: true
   })
   displayedOnFeed: boolean;
