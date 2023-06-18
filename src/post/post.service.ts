@@ -66,6 +66,7 @@ export class PostService {
         const post = await this.postRepository
             .createQueryBuilder('post')
             .leftJoinAndSelect('post.author', 'author')
+            .leftJoinAndSelect('author.userDetail', 'author.detail')
             .leftJoinAndSelect('post.skills', 'skills')
             .leftJoinAndSelect('post.comments', 'comments')
             .leftJoinAndSelect('post.uploadFiles', 'uploadFiles')
@@ -74,7 +75,8 @@ export class PostService {
                 'comments.id', 'comments.content', 'comments.user', 'comments.createdAt', 'comments.updatedAt',
                 'skills.id', 'skills.name',
                 'uploadFiles.Location', 
-                'author.firstName', 'author.lastName'
+                'author.firstName', 'author.lastName',
+                'author.detail.personalPicture'
             ])
             .where('post.id = :id', { id })
             // .orderBy('comments.id', 'DESC')
