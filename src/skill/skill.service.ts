@@ -27,10 +27,29 @@ export class SkillService {
   }
 
   getAll(queries) {
-    const query = queries
-    ? {where: queries}
-    : {};
-    return this.skillRepository.find(query);
+    let { name, level, description } = queries;
+    
+    const query = this.skillRepository
+      .createQueryBuilder('skill')
+
+    if(name){
+      query.andWhere('skill.name = :name', { name });
+    }
+
+    if(level){
+      query.andWhere('skill.level = :level', { level });
+    }
+
+    if(description){
+      query.andWhere('skill.description = :description', { description });
+    }
+
+    try{
+      const skills = query.getMany();
+      return skills;
+    }catch(err){
+      throw new NotFoundException(`no skills found`);
+    }
   }
 
   getOne(id: number) {

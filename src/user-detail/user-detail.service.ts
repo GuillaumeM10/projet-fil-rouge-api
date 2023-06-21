@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CityService } from 'src/city/city.service';
+import { SkillService } from 'src/skill/skill.service';
 import { UploadFileService } from 'src/upload-file/upload-file.service';
 import { Repository } from 'typeorm';
 import { CreateUserDetailDto } from './dto/create-user-detail.dto';
@@ -13,7 +14,8 @@ export class UserDetailService {
     @InjectRepository(UserDetailEntity)
     private readonly userDetailRepository: Repository<UserDetailEntity>,
     private readonly uploadFileService: UploadFileService,
-    private readonly CityService: CityService
+    private readonly CityService: CityService,
+    private readonly SkillService: SkillService,
   ){}
 
   async create(createUserDetailDto: CreateUserDetailDto) {
@@ -62,14 +64,15 @@ export class UserDetailService {
     return userDetails;
   }
 
-  async update(id: number, updateUserDetailDto: UpdateUserDetailDto, user, files) {
+  async update(id: number, updateUserDetailDto: UpdateUserDetailDto, user, files) {  
     const userDetail = await this.userDetailRepository.findOneBy({id});
+    
     let userDetailUpdate = { ...userDetail, ...updateUserDetailDto };
 
     if (!userDetail) {
       throw new NotFoundException(`UserDetail #${id} not found`);
     }
-      
+
     if(files?.cv){
       const cv = await this.uploadFileService.create(files.cv[0], user);
       console.log("upload CV");
@@ -82,6 +85,8 @@ export class UserDetailService {
     }
     if(files?.personalPicture){
       const personalPicture = await this.uploadFileService.create(files.personalPicture[0], user);
+      console.log(personalPicture);
+      
       userDetailUpdate.personalPicture = personalPicture;
     }
     if(files?.files){
@@ -93,6 +98,7 @@ export class UserDetailService {
       userDetailUpdate.files = filesData;
 
     }
+    
     const status = updateUserDetailDto.status;
     if(status){
       const enabledValue = [
@@ -119,9 +125,30 @@ export class UserDetailService {
       }));
     }
 
+    
+    if(updateUserDetailDto.skills){
+      let skills = JSON.parse(updateUserDetailDto.skills);
+      userDetailUpdate.skills = skills;
+      
+      await Promise.all(skills.map(async (skill, index) => {
+        
+        const skillData = await this.SkillService.getAll({name: skill.name});
+        
+        if(skillData[0]?.name === skill.name){
+          
+          const id = skillData[0].id;
+          userDetailUpdate.skills[index] = {"id": id};
+        }
+      }));
+    }
+
     try{
-      return await this.userDetailRepository.save(userDetailUpdate);
+      console.log(userDetailUpdate);
+
+      const newUserDetail = await this.userDetailRepository.save(userDetailUpdate);
+      return newUserDetail;
     }catch(error){
+      // console.log(error);
       return error['detail'];
     }
 

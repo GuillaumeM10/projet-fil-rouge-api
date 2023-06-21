@@ -20,7 +20,7 @@ export class UpdateUserDetailDto extends PartialType(CreateUserDetailDto) {
   profilComplet?: boolean;
   status?: string;
   range?: number;
-  // skills?: SkillEntity[];
+  skills?: any;
   banner?: any;
   personalPicture?: any;
   cv?: any;

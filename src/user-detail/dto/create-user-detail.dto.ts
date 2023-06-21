@@ -19,7 +19,7 @@ export class CreateUserDetailDto {
   phone?: string;
   status?: string;
   range?: number;
-  // skills?: SkillEntity[];
+  skills?: SkillEntity[];
   banner?: any;
   personalPicture?: any;
   cv?: any;
