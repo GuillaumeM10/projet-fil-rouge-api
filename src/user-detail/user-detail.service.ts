@@ -115,7 +115,10 @@ export class UserDetailService {
     }
 
     if(updateUserDetailDto.cities){
-      await Promise.all(updateUserDetailDto.cities.map(async (city, index) => {
+      let cities = JSON.parse(updateUserDetailDto.cities);
+      userDetailUpdate.cities = cities;
+
+      await Promise.all(cities.map(async (city, index) => {
         const cityData = await this.CityService.findAll({name: city.name});
         
         if(cityData[0]?.name === city.name){
@@ -143,12 +146,11 @@ export class UserDetailService {
     }
 
     try{
-      console.log(userDetailUpdate);
-
       const newUserDetail = await this.userDetailRepository.save(userDetailUpdate);
       return newUserDetail;
     }catch(error){
-      // console.log(error);
+      console.log(error);
+      
       return error['detail'];
     }
 
