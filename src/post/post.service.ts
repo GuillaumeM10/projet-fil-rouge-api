@@ -68,17 +68,19 @@ export class PostService {
         const post = await this.postRepository
             .createQueryBuilder('post')
             .leftJoinAndSelect('post.author', 'author')
-            .leftJoinAndSelect('author.userDetail', 'author.detail')
+            .leftJoinAndSelect('author.userDetail', 'userdetail')
             .leftJoinAndSelect('post.skills', 'skills')
             .leftJoinAndSelect('post.comments', 'comments')
             .leftJoinAndSelect('post.uploadFiles', 'uploadFiles')
+            .leftJoinAndSelect('userdetail.personalPicture', 'personalpicture')
             .select([
                 'post.id', 'post.updatedAt', 'post.createdAt', 'post.published', 'post.content',
                 'comments.id', 'comments.content', 'comments.user', 'comments.createdAt', 'comments.updatedAt',
                 'skills.id', 'skills.name',
-                'uploadFiles.Location', 
-                'author.firstName', 'author.lastName',
-                'author.detail.personalPicture'
+                'uploadFiles.Location',
+                'author.id', 'author.email', 'author.firstName', 'author.lastName',
+                'userdetail.id',
+                'personalpicture.id', 'personalpicture.Location'
             ])
             .where('post.id = :id', { id })
             // .orderBy('comments.id', 'DESC')
