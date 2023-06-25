@@ -9,6 +9,7 @@ import { ExperienceEntity } from './entities/experience.entity';
     TypeOrmModule.forFeature([ExperienceEntity])
   ],
   controllers: [ExperienceController],
-  providers: [ExperienceService]
+  providers: [ExperienceService],
+  exports: [ExperienceService]
 })
 export class ExperienceModule {}

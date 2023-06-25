@@ -24,18 +24,37 @@ export class LinkService {
     }
   }
 
-  async findAll() {
-    const links = await this.linkRepository
+  async findAll(queries) {
+    let { name, url } = queries;
+
+    const query = await this.linkRepository
             .createQueryBuilder('link')
             .leftJoinAndSelect('link.user', 'user', 'user.id = link.userId')
             .select([
               'link.id', 'link.name', 'link.url', 'link.description', 'link.deletedAt', 'link.updatedAt', 'link.createdAt',
               // 'user.firstName', 'user.lastName'
             ])
-            .orderBy('link.id', 'DESC')
-            .getMany();
 
-        return links;
+    if(name && url){
+      query.andWhere('link.name ILIKE :name', { name : `%${name}%` })
+      query.andWhere('link.url ILIKE :url', { url : `%${url}%` })
+    }else{
+      if( name ){
+        query.andWhere('link.name ILIKE :name', { name : `%${name}%` })
+      }
+      
+      if( url ){
+        query.andWhere('link.url ILIKE :url', { url : `%${url}%` })
+      }
+    }
+
+    try{
+      const links = await query.getMany();
+      return links;
+    }catch(err){
+      console.log(err);
+      return err.detail;
+    }
   }
 
   async findOne(id: number) {

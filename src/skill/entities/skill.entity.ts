@@ -10,7 +10,7 @@ export class SkillEntity extends Timestamp {
 
   @Column({
     nullable: false,
-    unique: true
+    unique: false
   })
   name: string;
 

@@ -26,7 +26,7 @@ export class SkillService {
     }
   }
 
-  getAll(queries) {
+  async getAll(queries) {
     let { name, level, description } = queries;
     
     const query = this.skillRepository
@@ -45,7 +45,7 @@ export class SkillService {
     }
 
     try{
-      const skills = query.getMany();
+      const skills = await query.getMany();
       return skills;
     }catch(err){
       throw new NotFoundException(`no skills found`);

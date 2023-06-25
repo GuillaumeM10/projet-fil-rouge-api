@@ -25,6 +25,6 @@ export class CreateUserDetailDto {
   cv?: any;
   files?: UploadFileEntity[];
   experiences?: ExperienceEntity[];
-  // links?: LinkEntity[];
+  links?: any;
   cities?: CityEntity[];
 }

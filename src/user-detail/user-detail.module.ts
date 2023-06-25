@@ -6,13 +6,17 @@ import { UserDetailEntity } from './entities/user-detail.entity';
 import { UploadFileModule } from 'src/upload-file/upload-file.module';
 import { CityModule } from 'src/city/city.module';
 import { SkillModule } from 'src/skill/skill.module';
+import { ExperienceModule } from 'src/experience/experience.module';
+import { LinkModule } from 'src/link/link.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([UserDetailEntity]),
     UploadFileModule,
     CityModule,
-    SkillModule
+    SkillModule,
+    ExperienceModule,
+    LinkModule
   ],
   controllers: [UserDetailController],
   providers: [UserDetailService],

@@ -22,18 +22,38 @@ export class ExperienceService {
     }
   }
 
-  async findAll() {
-    const experiences = await this.experienceRepository
+  async findAll(queries) {
+    let { companieName, jobName } = queries;
+
+    const query = await this.experienceRepository
             .createQueryBuilder('experience')
             .leftJoinAndSelect('experience.user', 'user', 'user.id = experience.userId')
             .select([
               'experience.id', 'experience.companieName', 'experience.jobName', 'experience.startDate', 'experience.endDate', 'experience.actualyIn', 'experience.type', 'experience.deletedAt', 'experience.updatedAt', 'experience.createdAt',
               'user.id'
             ])
-            .orderBy('experience.id', 'DESC')
-            .getMany();
 
-        return experiences;
+    if(companieName && jobName){
+      query.andWhere('experience.companieName ILIKE :companieName', { companieName : `%${companieName}%` })
+      query.andWhere('experience.jobName ILIKE :jobName', { jobName : `%${jobName}%` })
+    }else{      
+      if( companieName ){
+        query.andWhere('experience.companieName ILIKE :companieName', { companieName : `%${companieName}%` })
+      }
+      
+      if( jobName ){
+        query.andWhere('experience.jobName ILIKE :jobName', { jobName : `%${jobName}%` })
+      }
+    }
+
+    try{
+      const experiences = await query.getMany();
+      return experiences;
+    }catch(err){
+      console.log(err);
+      throw new NotFoundException(`Experience not found`);
+    }
+    
   }
 
   async findOne(id: number) {

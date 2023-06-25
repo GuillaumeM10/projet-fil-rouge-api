@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put, UseGuards, Query } from '@nestjs/common';
 import { ExperienceService } from './experience.service';
 import { CreateExperienceDto } from './dto/create-experience.dto';
 import { UpdateExperienceDto } from './dto/update-experience.dto';
@@ -19,8 +19,10 @@ export class ExperienceController {
   }
 
   @Get()
-  findAll() {
-    return this.experienceService.findAll();
+  findAll(
+    @Query() queries
+  ) {
+    return this.experienceService.findAll(queries);
   }
 
   @Get(':id')

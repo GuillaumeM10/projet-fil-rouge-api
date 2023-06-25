@@ -5,8 +5,8 @@ import { CreateExperienceDto } from './create-experience.dto';
 export class UpdateExperienceDto extends PartialType(CreateExperienceDto) {
   companieName?: string
   jobName?: string
-  startDate?: Date
-  endDate?: Date
+  startDate?: string
+  endDate?: string
   actualyIn?: boolean
   type?: string
   user?: UserDetailEntity

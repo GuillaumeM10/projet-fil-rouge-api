@@ -21,9 +21,11 @@ export class AuthService {
   async signup(signupAuthDto: SignupAuthDto) {
     const user = await this.usersService.create(signupAuthDto);
 
-    if(user.email){
+    if(user.email !== "" && user.email !== null && user.email !== undefined && user.email){
       const mailToken = Math.floor(1000 + Math.random() * 9000).toString();
       await this.mailService.sendUserConfirmation(user, mailToken);
+    }else{
+      throw new HttpException('Email requis', 400);
     }
     return user
   }
@@ -36,7 +38,7 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
-    const payload = { email: user.email, id: user.id, role: user.role }; // informations stoked in the token
+    const payload = { email: user.email, id: user.id, role: user.role, userDetail: user.userDetail.id }; // informations stoked in the token
     return {
       accessToken: this.generateJwtToken(payload),
     }

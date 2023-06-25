@@ -23,13 +23,13 @@ export class ExperienceEntity extends Timestamp {
     nullable: true,
     unique: false
   })
-  startDate: Date
+  startDate: string
 
   @Column({
     nullable: true,
     unique: false
   })
-  endDate: Date
+  endDate: string
 
   @Column({
     nullable: true,

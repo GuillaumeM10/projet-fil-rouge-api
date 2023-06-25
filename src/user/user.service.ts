@@ -22,6 +22,10 @@ export class UserService {
     if(!user.password){
       throw new NotFoundException(`Toutes les informations ne sont pas renseignées.`);
     }
+    
+    if(user.email === "" || user.email === null || user.email === undefined || !user.email){
+      throw new NotFoundException(`Email obligatoire.`);
+    }
 
     user.password = bcrypt.hashSync(user.password, salt)
     try{
@@ -64,7 +68,15 @@ export class UserService {
 
   
   async findOneByEmail(email: string) {
-    const user = await this.userRepository.findOneBy({ email });
+    // const user = await this.userRepository.findOneBy({ email });
+    // get one by email join userDetail
+    const user = await this.userRepository
+                    .createQueryBuilder('user')
+                    .leftJoinAndSelect('user.userDetail', 'userDetail')
+                    .where('user.email = :email', { email })
+                    .getOne();
+
+
     if(user === null){
       throw new NotFoundException(`Impossible de trouver l'utilisateur ${email}.`);
     }

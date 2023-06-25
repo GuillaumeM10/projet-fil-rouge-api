@@ -9,6 +9,7 @@ import { LinkEntity } from './entities/link.entity';
     TypeOrmModule.forFeature([LinkEntity]),
   ],
   controllers: [LinkController],
-  providers: [LinkService]
+  providers: [LinkService],
+  exports: [LinkService]
 })
 export class LinkModule {}

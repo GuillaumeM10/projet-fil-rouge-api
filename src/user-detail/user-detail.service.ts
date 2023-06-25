@@ -7,6 +7,8 @@ import { Repository } from 'typeorm';
 import { CreateUserDetailDto } from './dto/create-user-detail.dto';
 import { UpdateUserDetailDto } from './dto/update-user-detail.dto';
 import { UserDetailEntity } from './entities/user-detail.entity';
+import { ExperienceService } from 'src/experience/experience.service';
+import { LinkService } from 'src/link/link.service';
 
 @Injectable()
 export class UserDetailService {
@@ -16,6 +18,8 @@ export class UserDetailService {
     private readonly uploadFileService: UploadFileService,
     private readonly CityService: CityService,
     private readonly SkillService: SkillService,
+    private readonly ExperienceService: ExperienceService,
+    private readonly LinkService: LinkService
   ){}
 
   async create(createUserDetailDto: CreateUserDetailDto) {
@@ -141,6 +145,45 @@ export class UserDetailService {
           
           const id = skillData[0].id;
           userDetailUpdate.skills[index] = {"id": id};
+        }
+      }));
+    }
+
+    if(updateUserDetailDto.experiences){
+      let experiences = JSON.parse(updateUserDetailDto.experiences);
+      userDetailUpdate.experiences = experiences;
+      
+      await Promise.all(experiences.map(async (experience, index) => {
+        
+        const experienceData = await this.ExperienceService.findAll({companieName: experience.companieName, jobName: experience.jobName});
+        
+        if(
+          experienceData[0]?.companieName === experience.companieName
+          && experienceData[0]?.jobName === experience.jobName
+        ){
+
+          const id = experienceData[0].id;
+          userDetailUpdate.experiences[index] = {"id": id};
+        }
+      }));
+    }
+
+    if(updateUserDetailDto.links){
+      let links = JSON.parse(updateUserDetailDto.links);
+      console.log({links});
+      
+      userDetailUpdate.links = links;
+      
+      await Promise.all(links.map(async (link, index) => {
+        
+        const linkData = await this.LinkService.findAll({name: link.name});
+        
+        if(
+          linkData[0]?.name === link.name
+        ){
+
+          const id = linkData[0].id;
+          userDetailUpdate.links[index] = {"id": id};
         }
       }));
     }

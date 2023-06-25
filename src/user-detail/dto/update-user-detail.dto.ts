@@ -25,7 +25,7 @@ export class UpdateUserDetailDto extends PartialType(CreateUserDetailDto) {
   personalPicture?: any;
   cv?: any;
   files?: UploadFileEntity[];
-  experiences?: ExperienceEntity[];
-  // links?: LinkEntity[];
+  experiences?: any;
+  links?: any;
   cities?: any;
 }
