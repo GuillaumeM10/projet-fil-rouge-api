@@ -79,8 +79,6 @@ export class UserDetailService {
 
     if(files?.cv){
       const cv = await this.uploadFileService.create(files.cv[0], user);
-      console.log("upload CV");
-
       userDetailUpdate.cv = cv;
     }
     if(files?.banner){
@@ -89,8 +87,6 @@ export class UserDetailService {
     }
     if(files?.personalPicture){
       const personalPicture = await this.uploadFileService.create(files.personalPicture[0], user);
-      console.log(personalPicture);
-      
       userDetailUpdate.personalPicture = personalPicture;
     }
     if(files?.files){
@@ -170,8 +166,6 @@ export class UserDetailService {
 
     if(updateUserDetailDto.links){
       let links = JSON.parse(updateUserDetailDto.links);
-      console.log({links});
-      
       userDetailUpdate.links = links;
       
       await Promise.all(links.map(async (link, index) => {
