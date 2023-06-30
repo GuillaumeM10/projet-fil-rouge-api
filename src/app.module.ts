@@ -17,11 +17,25 @@ import { UploadFileModule } from './upload-file/upload-file.module';
 import { CityModule } from './city/city.module';
 import { CommentModule } from './comment/comment.module';
 import { ReplyModule } from './reply/reply.module';
+import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
-@Module({
-  imports: [
-    ConfigModule.forRoot(),
-    TypeOrmModule.forRoot({
+const isProduction = process.env.NODE_ENV === 'production';
+console.log('isProductionDB', isProduction);
+
+
+const typeOrmConfig: TypeOrmModuleOptions = isProduction
+  ? {
+      type: 'postgres',
+      url: `postgres://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@${process.env.POSTGRES_HOST}/${process.env.POSTGRES_DB}?options=project%3D${process.env.ENDPOINT_ID}`,
+      entities: [__dirname + '/**/*.entity{.ts,.js}'],
+      synchronize: true,
+      autoLoadEntities: true,
+      // extra: {
+      //   min: 2,
+      //   max: 5
+      // }
+    }
+  : {
       type: 'postgres',
       host: process.env.POSTGRES_HOST,
       port: parseInt(process.env.POSTGRES_PORT),
@@ -35,7 +49,12 @@ import { ReplyModule } from './reply/reply.module';
       //   min: 2,
       //   max: 5
       // }
-    }),
+    };
+
+@Module({
+  imports: [
+    ConfigModule.forRoot(),
+    TypeOrmModule.forRoot(typeOrmConfig),
     AuthModule,
     UserModule,
     UserDetailModule,
