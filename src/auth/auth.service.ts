@@ -20,9 +20,9 @@ export class AuthService {
 
   async signup(signupAuthDto: SignupAuthDto) {
     
+    const user = await this.usersService.create(signupAuthDto);
     if(user.email !== "" && user.email !== null && user.email !== undefined && user.email){
-      const user = await this.usersService.create(signupAuthDto);
-      
+
       // const mailToken = Math.floor(1000 + Math.random() * 9000).toString();
       // await this.mailService.sendUserConfirmation(user, mailToken);
 
