@@ -23,12 +23,12 @@ export class UserEntity extends Timestamp{
   password: string
 
   @Column({
-    nullable: false
+    nullable: true
   })
   firstName: string
 
   @Column({
-    nullable: false
+    nullable: true
   })
   lastName: string
 

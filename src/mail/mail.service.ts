@@ -10,33 +10,44 @@ export class MailService {
   async sendUserConfirmation(user: UserEntity, token: string) {
     const url = `example.com/auth/confirm?token=${token}`;
 
-    await this.mailerService.sendMail({
-      to: user.email,
-      // from: '"Support Team" <support@example.com>', // override default from
-      subject: 'STYDYJob : Mail de confirmation',
-      template: './confirmation', // `.hbs` extension is appended automatically
-      context: { // ✏️ filling curly brackets with content
-        name: user.firstName,
-        url,
-      },
-    });    
+    try{
+
+      await this.mailerService.sendMail({
+        to: user.email,
+        // from: '"Support Team" <support@example.com>', // override default from
+        subject: 'STYDYJob : Mail de confirmation',
+        template: './confirmation', // `.hbs` extension is appended automatically
+        context: { // ✏️ filling curly brackets with content
+          name: user.firstName,
+          url,
+        },
+      });  
+
+    }catch(err){
+      throw new ConflictException(`Le mail n'a pas pu être envoyé à ${user.email}`);
+    } 
   }
 
   async create(createTokenResetPasswordDto: CreateTokenResetPasswordDto, token: string) {
     const url = `http://localhost:3000/reset-password/${token}`;
-    // console.log({token, "email": createTokenResetPasswordDto.email});
+    console.log({token, "email": createTokenResetPasswordDto.email});
 
+    try{
+
+      await this.mailerService.sendMail({
+        to: createTokenResetPasswordDto.email,
+        // from: '"Support Team" <
+        subject: 'STYDYJob : Mail de changement de mot de passe',
+        template: './reset-password', // `.hbs` extension is appended automatically
+        context: { // ✏️ filling curly brackets with content
+          url,
+        },
+      });
+      
+      return { message: `Mail envoyé à ${createTokenResetPasswordDto.email}`};
     
-    await this.mailerService.sendMail({
-      to: createTokenResetPasswordDto.email,
-      // from: '"Support Team" <
-      subject: 'STYDYJob : Mail de changement de mot de passe',
-      template: './reset-password', // `.hbs` extension is appended automatically
-      context: { // ✏️ filling curly brackets with content
-        url,
-      },
-    });
-
-    return { message: `Mail envoyé à ${createTokenResetPasswordDto.email}`};
+    }catch(err){
+      throw new ConflictException(`Le mail n'a pas pu être envoyé à ${createTokenResetPasswordDto.email}`);
+    }
   }
 }

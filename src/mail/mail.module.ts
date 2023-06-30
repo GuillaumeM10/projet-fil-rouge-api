@@ -3,51 +3,65 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
 import { Global, Module } from '@nestjs/common';
 import { MailService } from './mail.service';
 import { join } from 'path';
-import { ConfigModule } from '@nestjs/config';
-
-// prod
-// transport: {
-//   host: process.env.MAIL_HOST,
-//   port: +process.env.MAIL_PORT,
-//   secure: true,
-//   auth: {
-//     user: process.env.MAIL_USER,
-//     pass: process.env.MAIL_PASSWORD,
-//   },
-// },
-
-// dev
-// transport: {
-//   host: process.env.MAIL_HOST,
-//   port: +process.env.MAIL_PORT,
-//   secure: false,
-// },
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { createTransport } from 'nodemailer';
 
 @Global()
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    MailerModule.forRoot({
-      // transport: process.env.MAIL_TRANSPORT,
-      // or
-      transport: {
-        host: process.env.MAIL_HOST,
-        port: +process.env.MAIL_PORT,
-        secure: false,
+    MailerModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => {
+        const isProduction = configService.get('NODE_ENV') === 'production';
+        
+        if (isProduction) {
+          return {
+            transport: createTransport({
+              host: 'smtp-relay.brevo.com',
+              port: 587,
+              secure: false,
+              auth: {
+                user: configService.get('MAIL_USER'),
+                pass: configService.get('MAIL_PASSWORD'),
+              },
+            }),
+            defaults: {
+              from: `"No Reply" <${configService.get('MAIL_FROM')}>`,
+            },
+            template: {
+              dir: join(__dirname, 'templates'),
+              adapter: new HandlebarsAdapter(),
+              options: {
+                strict: true,
+              },
+            },
+          };
+        } else {
+          // Use Nodemailer in development environment
+          return {
+            transport: {
+              host: process.env.MAIL_HOST,
+              port: +process.env.MAIL_PORT,
+              secure: false,
+            },
+            defaults: {
+              from: '"No Reply" <noreply@example.com>',
+            },
+            template: {
+              dir: join(__dirname, 'templates'),
+              adapter: new HandlebarsAdapter(), // or new PugAdapter() or new EjsAdapter()
+              options: {
+                strict: true,
+              },
+            },
+          };
+        }
       },
-      defaults: {
-        from: '"No Reply" <noreply@example.com>',
-      },
-      template: {
-        dir: join(__dirname, 'templates'),
-        adapter: new HandlebarsAdapter(), // or new PugAdapter() or new EjsAdapter()
-        options: {
-          strict: true,
-        },
-      },
+      inject: [ConfigService],
     }),
   ],
   providers: [MailService],
-  exports: [MailService], // 👈 export for DI
+  exports: [MailService],
 })
 export class MailModule {}

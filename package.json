@@ -22,7 +22,7 @@
   "dependencies": {
     "@nestjs-modules/mailer": "^1.8.1",
     "@nestjs/common": "^9.0.0",
-    "@nestjs/config": "^2.3.1",
+    "@nestjs/config": "^2.3.4",
     "@nestjs/core": "^9.0.0",
     "@nestjs/jwt": "^10.0.2",
     "@nestjs/mapped-types": "*",
@@ -43,6 +43,8 @@
     "pg": "^8.9.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
+    "sendinblue": "^0.0.1",
+    "sib-api-v3-sdk": "^8.5.0",
     "typeorm": "^0.3.12",
     "uuid": "^9.0.0"
   },
