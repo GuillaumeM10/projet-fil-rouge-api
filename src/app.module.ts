@@ -26,7 +26,11 @@ console.log('isProductionDB', isProduction);
 const typeOrmConfig: TypeOrmModuleOptions = isProduction
   ? {
       type: 'postgres',
-      url: `postgres://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@${process.env.POSTGRES_HOST}/${process.env.POSTGRES_DB}?options=project%3D${process.env.ENDPOINT_ID}`,
+      host: process.env.POSTGRES_HOST,
+      username: process.env.POSTGRES_USER,
+      password: process.env.POSTGRES_PASSWORD,
+      database: process.env.POSTGRES_DB,
+      ssl: true,
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
       autoLoadEntities: true,
