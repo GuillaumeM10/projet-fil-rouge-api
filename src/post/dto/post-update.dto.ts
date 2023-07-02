@@ -9,4 +9,5 @@ export class PostUpdateDto {
   userId?: number;
   author?: UserEntity;
   uploadFiles?: any[];
+  cities?: any;
 }

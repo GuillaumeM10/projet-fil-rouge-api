@@ -11,9 +11,9 @@ export class CreateUserDetailDto {
   formation?: string;
   school?: string;
   contactEmail?: string;
-  displayedOnFeed?: boolean;
+  displayedOnFeed?: any;
   description?: string;
-  profilComplet?: boolean;
+  profilComplet?: any;
   address?: string;
   country?: string;
   phone?: string;

@@ -6,4 +6,5 @@ export class UpdateCityDto extends PartialType(CreateCityDto) {
   id?: number;
   name?: string;
   users?: UserDetailEntity[];
+  posts?: any;
 }

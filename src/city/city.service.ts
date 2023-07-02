@@ -30,6 +30,7 @@ export class CityService {
     const query = await this.cityRepository
       .createQueryBuilder('city')
       .leftJoinAndSelect('city.users', 'users')
+      .leftJoinAndSelect('city.posts', 'posts');
       
     if(name){
       query.andWhere('city.name = :name', { name });
@@ -45,7 +46,14 @@ export class CityService {
   }
 
   async findOne(id: number) {
-    const city = await this.cityRepository.findOneBy({id});
+    // const city = await this.cityRepository.findOneBy({id});
+    const city = await this.cityRepository
+      .createQueryBuilder('city')
+      .leftJoinAndSelect('city.users', 'users')
+      .leftJoinAndSelect('city.posts', 'posts')
+      .where('city.id = :id', { id })
+      .getOne();
+
     if(city !== null){
       return city;
     }else{

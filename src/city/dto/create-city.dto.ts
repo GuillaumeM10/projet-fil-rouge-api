@@ -4,4 +4,5 @@ export class CreateCityDto {
   id?: number;
   name?: string;
   users?: UserDetailEntity[];
+  posts?: any;
 }

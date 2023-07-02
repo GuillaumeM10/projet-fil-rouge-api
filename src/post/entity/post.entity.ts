@@ -1,3 +1,4 @@
+import { CityEntity } from "src/city/entities/city.entity";
 import { CommentEntity } from "src/comment/entities/comment.entity";
 import { Timestamp } from "src/Generic/timestamp.entity";
 import { SkillEntity } from "src/skill/entities/skill.entity";
@@ -28,6 +29,13 @@ export class PostEntity extends Timestamp{
   })
   @JoinTable()
   skills: SkillEntity[]
+
+  @ManyToMany(() => CityEntity, city => city.posts, {
+    cascade: ["insert"],
+    nullable: true
+  })
+  @JoinTable()
+  cities: CityEntity[]
 
   @ManyToOne(() => UserEntity, user => user.posts)
   @JoinTable()

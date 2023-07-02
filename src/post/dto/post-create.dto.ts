@@ -9,4 +9,5 @@ export class PostCreateDto {
   userId?: number;
   author?: UserEntity;
   uploadFiles?: any[];
+  cities?: any;
 }

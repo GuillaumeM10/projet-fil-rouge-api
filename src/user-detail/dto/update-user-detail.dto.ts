@@ -12,12 +12,12 @@ export class UpdateUserDetailDto extends PartialType(CreateUserDetailDto) {
   formation?: string;
   school?: string;
   contactEmail?: string;
-  displayedOnFeed?: boolean;
+  displayedOnFeed?: any;
   description?: string;
   address?: string;
   country?: string;
   phone?: string;
-  profilComplet?: boolean;
+  profilComplet?: any;
   status?: string;
   range?: number;
   skills?: any;
