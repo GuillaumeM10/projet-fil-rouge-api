@@ -71,8 +71,6 @@ export class UserDetailService {
   async update(id: number, updateUserDetailDto: UpdateUserDetailDto, user, files) {  
     const userDetail = await this.userDetailRepository.findOneBy({id});
 
-    console.log(updateUserDetailDto.displayedOnFeed);
-    
     if(updateUserDetailDto.displayedOnFeed === "true"){
       updateUserDetailDto.displayedOnFeed = true;
     }else if(updateUserDetailDto.displayedOnFeed === "false"){

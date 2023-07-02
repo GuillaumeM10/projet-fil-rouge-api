@@ -18,11 +18,11 @@ export class PostService {
 
     async getAllPosts(queries) {
         let { page, limit, author } = queries;
-
+        
         limit = limit ? +limit : 10;
         page = page ? +page : 1;
 
-        const query = await this.postRepository
+        const query = this.postRepository
             .createQueryBuilder('post')
             .leftJoinAndSelect('post.author', 'author')
             .leftJoinAndSelect('author.userDetail', 'userdetail')
@@ -40,28 +40,21 @@ export class PostService {
                 'author.id', 'author.email', 'author.firstName', 'author.lastName',
                 'userdetail.id', 'userdetail.profilComplet', 'userdetail.displayedOnFeed',
                 'personalpicture.id', 'personalpicture.Location'
-            ]);
-
-
+            ])
+            
         // if(categories !== undefined) {
         //     query
         //         .where('categories.name IN (:...categories)', { categories: categories.split(',') })
         // }
-        
-        if(page && limit) {
-            query
-                .limit(limit)
-                .offset((page - 1) * limit)
-        }
 
         if(author !== undefined) {
             query
                 .where('author.id = :author', { author })
         }
 
-        const postList = query
-                            .limit(limit)
-                            .offset((page - 1) * limit)
+        const postList = await query
+                            .take(limit)
+                            .skip((page - 1) * limit)
                             .orderBy('post.id', 'DESC')
                             .getMany();
 
@@ -96,8 +89,6 @@ export class PostService {
     }
     
     async createPost(data: PostCreateDto, user, files) {
-        console.log('files', files);
-        
         if (files !== undefined) {
             let filesData = await Promise.all(files.map(async file => {
                 const uploadFile = await this.uploadFileService.create(file, user);
@@ -109,7 +100,6 @@ export class PostService {
         }
 
         if(data.cities){
-            console.log(typeof data.cities);
             let cities = data.cities
             if(typeof data.cities !== 'object') {
                 cities = JSON.parse(data.cities);
@@ -178,8 +168,6 @@ export class PostService {
     async softDeletePost(id: number) {
         const getPost = await this.getOnePostById( id );
 
-        console.log('getPost', getPost);
-        
         if (!getPost) {
             throw new NotFoundException(`Le post d'id ${id} n'existe pas.`);
         }else if(getPost.deletedAt === null) {
