@@ -38,8 +38,46 @@ export class UserService {
     }
   }
 
-  async findAll() {
-    return await this.userRepository.find();
+  async findAll(queries) {
+    const { page, limit, search } = queries;
+
+    const query = this.userRepository
+                    .createQueryBuilder('user')
+                    .leftJoinAndSelect('user.userDetail', 'userDetail')
+                    // .leftJoinAndSelect('userDetail.skills', 'skills')
+                    // .leftJoinAndSelect('userDetail.links', 'links')
+                    // .leftJoinAndSelect('userDetail.cities', 'cities')
+                    // .leftJoinAndSelect('userDetail.experiences', 'experiences')
+                    // .leftJoinAndSelect('userDetail.files', 'files')
+                    // .leftJoinAndSelect('userDetail.cv', 'cv')
+                    .leftJoinAndSelect('userDetail.personalPicture', 'personalPicture')
+                    // .leftJoinAndSelect('userDetail.banner', 'banner') 
+                    // .leftJoinAndSelect('user.comments', 'comments')
+                    // .leftJoinAndSelect('user.replies', 'replies')
+                    // .leftJoinAndSelect('user.posts', 'posts')
+
+    if(search){
+      query
+        .where('user.firstName LIKE :search', { search: `%${search}%` })
+        .orWhere('user.lastName LIKE :search', { search: `%${search}%` })
+        
+    }
+
+    if(page && limit){
+      query
+        .skip(page * limit)
+        .take(limit)
+    }
+
+    const user = await query
+                        .orderBy('user.id', 'DESC') 
+                        .getMany();
+
+    if(user === null){
+      throw new NotFoundException(`Pas de résultats`);
+    }
+    return user;
+    // return await this.userRepository.find();
   }
 
   async findOne(id: number) {

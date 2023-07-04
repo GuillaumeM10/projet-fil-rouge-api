@@ -17,7 +17,7 @@ export class PostService {
     ) {}
 
     async getAllPosts(queries) {
-        let { page, limit, author } = queries;
+        let { page, limit, author, search } = queries;
         
         limit = limit ? +limit : 10;
         page = page ? +page : 1;
@@ -46,6 +46,13 @@ export class PostService {
         //     query
         //         .where('categories.name IN (:...categories)', { categories: categories.split(',') })
         // }
+
+        if(search !== undefined) {
+            query
+                .where('post.content ILIKE :search', { search: `%${search}%` })
+                .orWhere('skills.name ILIKE :search', { search: `%${search}%` })
+                .orWhere('cities.name ILIKE :search', { search: `%${search}%` })
+        }
 
         if(author !== undefined) {
             query
