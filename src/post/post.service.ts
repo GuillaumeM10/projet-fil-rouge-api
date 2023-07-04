@@ -66,6 +66,7 @@ export class PostService {
                             .getMany();
 
         // example of api request: http://localhost:3000/posts?limit=2&page=1&author=1
+        if(postList.length === null) throw new NotFoundException('Pas de résultats')
         return postList;
     }
     async getOnePostById(id: number) {
