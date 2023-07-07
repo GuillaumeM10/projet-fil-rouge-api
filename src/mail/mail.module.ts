@@ -20,7 +20,7 @@ import { createTransport } from 'nodemailer';
             transport: createTransport({
               host: 'smtp-relay.brevo.com',
               port: 587,
-              secure: false,
+              secure: true,
               auth: {
                 user: configService.get('MAIL_USER'),
                 pass: configService.get('MAIL_PASSWORD'),
