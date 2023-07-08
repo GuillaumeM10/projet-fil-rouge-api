@@ -14,12 +14,13 @@ export class CityEntity extends Timestamp {
   })
   name: string;
 
-  @ManyToMany(() => UserDetailEntity, user => user.cities)
-  @JoinTable()
-  users: UserDetailEntity[];
-
-  @ManyToMany(() => PostEntity, post => post.cities)
-  @JoinTable()
+  @ManyToMany(() => PostEntity, post => post.cities, {
+    nullable: true
+  })
   posts: PostEntity[];
-  
+
+  @ManyToMany(() => UserDetailEntity, user => user.cities, {
+    nullable: true
+  })
+  users: UserDetailEntity[];
 }

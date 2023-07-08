@@ -12,22 +12,24 @@ export class CityService {
     private readonly cityRepository: Repository<CityEntity>,
   ) {}
 
-  async create(createCityDto: CreateCityDto) {
-    try{
-        return await this.cityRepository.save(createCityDto);
-    }catch(err){
-        console.log(err);
-        return err.detail;
+  async create(createCityDto: CreateCityDto, user) {
+    if (user) {
+      try{
+        const city = this.cityRepository.create(createCityDto);
+        return await this.cityRepository.save(city);
+      }catch(err){
+          console.log(err);
+          return err.detail;
+      }
+    }else{
+      throw new NotFoundException(`User not found`);
     }
   }
 
   async findAll(queries) {
-    // const cities = await this.cityRepository.find();
-    // return cities;
-
     let { name } = queries;
 
-    const query = await this.cityRepository
+    const query = this.cityRepository
       .createQueryBuilder('city')
       .leftJoinAndSelect('city.users', 'users')
       .leftJoinAndSelect('city.posts', 'posts');
