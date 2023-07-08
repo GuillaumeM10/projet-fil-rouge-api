@@ -40,26 +40,30 @@ export class UserEntity extends Timestamp{
 
   @OneToOne(() => UserDetailEntity, userDetail => userDetail.user, {
     cascade: ["insert", "update", "remove"],
-    onDelete: "CASCADE"
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE"
   })
   @JoinColumn()
   userDetail: UserDetailEntity
 
   @OneToMany(() => PostEntity, post => post.author,{
     cascade: ["insert", "update", "remove"],
-    onDelete: "CASCADE"
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE"
   })
   posts: PostEntity[]
 
   @OneToMany(() => CommentEntity, comment => comment.user, {
     cascade: ["insert", "update", "remove"],
-    onDelete: "CASCADE"
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE"
   })
   comments: CommentEntity[]
 
   @OneToMany(() => ReplyEntity, reply => reply.author, {
     cascade: ["insert", "update", "remove"],
-    onDelete: "CASCADE"
+    onDelete: "CASCADE",
+    onUpdate: "CASCADE"
   })
   replies: ReplyEntity[]
   
