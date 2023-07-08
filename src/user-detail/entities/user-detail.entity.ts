@@ -81,49 +81,49 @@ export class UserDetailEntity extends Timestamp {
   })
   range :number;
   
-  @ManyToMany(() => SkillEntity, skill => skill.users, {
-    cascade: ["insert"],
-    nullable: true
-  }) 
-  @JoinTable()
-  skills: SkillEntity[];
-  
   @OneToOne(() => UploadFileEntity, {
-    cascade: ["insert"],
+    cascade: ["insert", "update", "remove"],
+    onDelete: "CASCADE",
     nullable: true
   })
   @JoinColumn()
   banner: UploadFileEntity;
 
   @OneToOne(() => UploadFileEntity, {
-    cascade: ["insert"],
+    cascade: ["insert", "update", "remove"],
+    onDelete: "CASCADE",
     nullable: true
   })
   @JoinColumn()
   personalPicture: UploadFileEntity;
 
   @OneToOne(() => UploadFileEntity, {
-    cascade: ["insert"],
+    cascade: ["insert", "update", "remove"],
+    onDelete: "CASCADE",
     nullable: true
   })
   @JoinColumn()
   cv: UploadFileEntity;
 
   @ManyToMany(() => UploadFileEntity, uploadFile => uploadFile.userDetails, {
-    cascade: ["insert"]
+    cascade: ["insert", "update", "remove"],
+    onDelete: "CASCADE",
+    nullable: true
   })
   @JoinTable()
   files: UploadFileEntity[];
   
   @OneToMany(() => ExperienceEntity, experience => experience.user, {
-    cascade: ["insert"],
+    cascade: ["insert", "update", "remove"],
+    onDelete: "CASCADE",
     nullable: true
   })
   @JoinColumn()
   experiences: ExperienceEntity[];
   
   @OneToMany(() => LinkEntity, link => link.user, {
-    cascade: ["insert"],
+    cascade: ["insert", "update", "remove"],
+    onDelete: "CASCADE",
     nullable: true
   })
   @JoinColumn()
@@ -135,4 +135,11 @@ export class UserDetailEntity extends Timestamp {
   }) 
   @JoinTable()
   cities: CityEntity[];
+
+  @ManyToMany(() => SkillEntity, skill => skill.users, {
+    cascade: ["insert"],
+    nullable: true
+  }) 
+  @JoinTable()
+  skills: SkillEntity[];
 }

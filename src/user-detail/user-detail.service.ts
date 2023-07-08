@@ -127,7 +127,7 @@ export class UserDetailService {
     }
 
     if(updateUserDetailDto.cities){
-      let cities = JSON.parse(updateUserDetailDto.cities);
+      let cities = typeof updateUserDetailDto.cities === "string" ? JSON.parse(updateUserDetailDto.cities) : updateUserDetailDto.cities;
       userDetailUpdate.cities = cities;
 
       await Promise.all(cities.map(async (city, index) => {
@@ -142,7 +142,7 @@ export class UserDetailService {
 
     
     if(updateUserDetailDto.skills){
-      let skills = JSON.parse(updateUserDetailDto.skills);
+      let skills = typeof updateUserDetailDto.skills === "string" ? JSON.parse(updateUserDetailDto.skills) : updateUserDetailDto.skills;
       userDetailUpdate.skills = skills;
       
       await Promise.all(skills.map(async (skill, index) => {
@@ -158,7 +158,7 @@ export class UserDetailService {
     }
 
     if(updateUserDetailDto.experiences){
-      let experiences = JSON.parse(updateUserDetailDto.experiences);
+      let experiences = typeof updateUserDetailDto.experiences === "string" ? JSON.parse(updateUserDetailDto.experiences) : updateUserDetailDto.experiences;
       userDetailUpdate.experiences = experiences;
       
       await Promise.all(experiences.map(async (experience, index) => {
@@ -177,7 +177,7 @@ export class UserDetailService {
     }
 
     if(updateUserDetailDto.links){
-      let links = JSON.parse(updateUserDetailDto.links);
+      let links = typeof updateUserDetailDto.links === "string" ? JSON.parse(updateUserDetailDto.links) : updateUserDetailDto.links;
       userDetailUpdate.links = links;
       
       await Promise.all(links.map(async (link, index) => {

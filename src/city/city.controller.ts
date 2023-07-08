@@ -12,9 +12,10 @@ export class CityController {
   @Post()
   @UseGuards(JwtAuthGuard)
   create(
-    @Body() createCityDto: CreateCityDto
+    @Body() createCityDto: CreateCityDto,
+    @User() user
   ) {
-    return this.cityService.create(createCityDto);
+    return this.cityService.create(createCityDto, user);
   }
 
   @Get()

@@ -70,30 +70,38 @@ export class PostService {
         return postList;
     }
     async getOnePostById(id: number) {
-        const post = await this.postRepository
-            .createQueryBuilder('post')
-            .leftJoinAndSelect('post.author', 'author')
-            .leftJoinAndSelect('author.userDetail', 'userdetail')
-            .leftJoinAndSelect('post.skills', 'skills')
-            .leftJoinAndSelect('post.comments', 'comments')
-            .leftJoinAndSelect('post.cities', 'cities')
-            .leftJoinAndSelect('post.uploadFiles', 'uploadFiles')
-            .leftJoinAndSelect('userdetail.personalPicture', 'personalpicture')
-            .select([
-                'post.id', 'post.updatedAt', 'post.createdAt', 'post.published', 'post.content',
-                'comments.id', 'comments.content', 'comments.user', 'comments.createdAt', 'comments.updatedAt',
-                'skills.id', 'skills.name',
-                'cities.id', 'cities.name',
-                'uploadFiles.Location',
-                'author.id', 'author.email', 'author.firstName', 'author.lastName',
-                'userdetail.id', 'userdetail.profilComplet', 'userdetail.displayedOnFeed',
-                'personalpicture.id', 'personalpicture.Location'
-            ])
-            .where('post.id = :id', { id })
-            // .orderBy('comments.id', 'DESC')
-            .getOne();
+        try {
+            
+            const post = await this.postRepository
+                .createQueryBuilder('post')
+                .leftJoinAndSelect('post.author', 'author')
+                .leftJoinAndSelect('author.userDetail', 'userdetail')
+                .leftJoinAndSelect('post.skills', 'skills')
+                .leftJoinAndSelect('post.comments', 'comments')
+                .leftJoinAndSelect('post.cities', 'cities')
+                .leftJoinAndSelect('post.uploadFiles', 'uploadFiles')
+                .leftJoinAndSelect('userdetail.personalPicture', 'personalpicture')
+                .select([
+                    'post.id', 'post.updatedAt', 'post.createdAt', 'post.published', 'post.content',
+                    'comments.id', 'comments.content', 'comments.user', 'comments.createdAt', 'comments.updatedAt',
+                    'skills.id', 'skills.name',
+                    'cities.id', 'cities.name',
+                    'uploadFiles.Location',
+                    'author.id', 'author.email', 'author.firstName', 'author.lastName',
+                    'userdetail.id', 'userdetail.profilComplet', 'userdetail.displayedOnFeed',
+                    'personalpicture.id', 'personalpicture.Location'
+                ])
+                .where('post.id = :id', { id })
+                // .orderBy('comments.id', 'DESC')
+                .getOne();
 
-        return post;
+            if (post === undefined || post === null) {
+                throw new NotFoundException(`Le post d'id ${id} n'existe pas.`);
+            }
+            return post;
+        } catch (error) {
+            throw new NotFoundException(`Le post d'id ${id} n'existe pas.`);
+        }
     }
     
     async createPost(data: PostCreateDto, user, files) {

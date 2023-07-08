@@ -17,7 +17,8 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "test:e2e:watch": "jest --runInBand --config ./test/jest-e2e.json --watch"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^1.8.1",
@@ -27,8 +28,8 @@
     "@nestjs/jwt": "^10.0.2",
     "@nestjs/mapped-types": "*",
     "@nestjs/passport": "^9.0.3",
-    "@nestjs/platform-express": "^9.0.0",
-    "@nestjs/swagger": "^7.0.0",
+    "@nestjs/platform-express": "^9.4.3",
+    "@nestjs/swagger": "^7.1.1",
     "@nestjs/typeorm": "^9.0.1",
     "@types/nodemailer": "^6.4.7",
     "aws-sdk": "^2.1337.0",
@@ -40,7 +41,8 @@
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
-    "pg": "^8.9.0",
+    "pg": "^8.11.1",
+    "pg-hstore": "^2.3.4",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
     "sendinblue": "^0.0.1",

@@ -13,18 +13,18 @@ export class CreateUserDetailDto {
   contactEmail?: string;
   displayedOnFeed?: any;
   description?: string;
-  profilComplet?: any;
   address?: string;
   country?: string;
   phone?: string;
+  profilComplet?: any;
   status?: string;
   range?: number;
-  skills?: SkillEntity[];
+  skills?: any;
   banner?: any;
   personalPicture?: any;
   cv?: any;
   files?: UploadFileEntity[];
-  experiences?: ExperienceEntity[];
+  experiences?: any;
   links?: any;
-  cities?: CityEntity[];
+  cities?: any;
 }
