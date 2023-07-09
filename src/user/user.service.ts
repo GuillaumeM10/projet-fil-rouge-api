@@ -121,18 +121,23 @@ export class UserService {
     return user;
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
-    const user = await this.findOne(id);
+  async update(id: number, updateUserDto: UpdateUserDto, user) {
+    const getUser = await this.findOne(id);
 
-    if (!user) {
-      throw new NotFoundException(`Impossible de trouver l'utilisateur #${id}.`);
+    if(getUser.id !== user.id){
+      if (!getUser) {
+        throw new NotFoundException(`Impossible de trouver l'utilisateur #${id}.`);
+      }
+
+      const userUpdate = { ...getUser, ...updateUserDto };
+
+      await this.userRepository.save(userUpdate);
+
+      return userUpdate;
+    }else{
+      throw new NotFoundException(`Impossible de modifier votre compte.`);
     }
 
-    const userUpdate = { ...user, ...updateUserDto };
-
-    await this.userRepository.save(userUpdate);
-
-    return userUpdate;
   }
 
   async updatePassword(password: string, updateUserDto: UpdateUserDto) {
@@ -150,17 +155,23 @@ export class UserService {
     return userUpdate;
   }
 
-  async softDelete(id: number) {    
-    const user = await this.findOne(id);
-    if(user.userDetail){
-      await this.userDetailService.softDelete(user.userDetail.id);
-    }
-    const userToRemove = await this.userRepository.softDelete(id);
+  async softDelete(id: number, user) {    
+    const getUser = await this.findOne(id);
 
-    if (!userToRemove) {
-      throw new NotFoundException(`Impossible de trouver l'utilisateur #${id}.`);
-    }
+    if(getUser.id !== user.id){
 
-    return { message: `L'utilisateur #${id} a été supprimé.`};
+      if(getUser.userDetail){
+        await this.userDetailService.softDelete(getUser.userDetail.id);
+      }
+      const userToRemove = await this.userRepository.softDelete(id);
+
+      if (!userToRemove) {
+        throw new NotFoundException(`Impossible de trouver l'utilisateur #${id}.`);
+      }
+
+      return { message: `L'utilisateur #${id} a été supprimé.`};
+    }else{
+      throw new NotFoundException(`Impossible de supprimer votre compte.`);
+    }
   }
 }
