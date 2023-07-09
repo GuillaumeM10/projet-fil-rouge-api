@@ -58,8 +58,8 @@ export class UserService {
 
     if(search){
       query
-        .where('user.firstName LIKE :search', { search: `%${search}%` })
-        .orWhere('user.lastName LIKE :search', { search: `%${search}%` })
+        .where('user.firstName ILIKE :search', { search: `%${search}%` })
+        .orWhere('user.lastName ILIKE :search', { search: `%${search}%` })
         
     }
 
