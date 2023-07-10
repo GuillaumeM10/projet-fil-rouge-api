@@ -31,8 +31,7 @@ export class MailService {
   }
 
   async create(createTokenResetPasswordDto: CreateTokenResetPasswordDto, token: string) {
-    const url = `http://localhost:3000/reset-password/${token}`;
-    console.log({token, "email": createTokenResetPasswordDto.email});
+    const url = `${process.env.FRONT_URL}/reset-password/${token}`;
 
     try{
 
