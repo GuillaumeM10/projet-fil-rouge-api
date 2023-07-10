@@ -47,6 +47,7 @@ export class MailService {
       return { message: `Mail envoyé à ${createTokenResetPasswordDto.email}`};
     
     }catch(err){
+      console.log(err)
       throw new ConflictException(`Le mail n'a pas pu être envoyé à ${createTokenResetPasswordDto.email}`);
     }
   }

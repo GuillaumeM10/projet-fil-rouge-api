@@ -17,17 +17,17 @@ import { createTransport } from 'nodemailer';
         
         if (isProduction) {
           return {
-            transport: createTransport({
-              host: 'smtp-relay.brevo.com',
-              port: 587,
+            transport: {
+              host: process.env.MAIL_HOST,
+              port: +process.env.MAIL_PORT,
               secure: true,
               auth: {
-                user: configService.get('MAIL_USER'),
-                pass: configService.get('MAIL_PASSWORD'),
+                user: process.env.MAIL_USER,
+                pass: process.env.MAIL_PASSWORD,
               },
-            }),
+            },
             defaults: {
-              from: `"No Reply" <${configService.get('MAIL_FROM')}>`,
+              from: `"No Reply" <${process.env.MAIL_FROM}>`,
             },
             template: {
               dir: join(__dirname, 'templates'),
@@ -46,7 +46,7 @@ import { createTransport } from 'nodemailer';
               secure: false,
             },
             defaults: {
-              from: '"No Reply" <noreply@example.com>',
+              from: '"No Reply" <${process.env.MAIL_FROM}>',
             },
             template: {
               dir: join(__dirname, 'templates'),
