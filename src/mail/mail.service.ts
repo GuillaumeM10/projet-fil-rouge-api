@@ -24,6 +24,8 @@ export class MailService {
       });  
 
     }catch(err){
+      console.log(err);
+      
       throw new ConflictException(`Le mail n'a pas pu être envoyé à ${user.email}`);
     } 
   }

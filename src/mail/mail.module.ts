@@ -20,7 +20,6 @@ import { createTransport } from 'nodemailer';
             transport: {
               host: process.env.MAIL_HOST,
               port: +process.env.MAIL_PORT,
-              secure: true,
               auth: {
                 user: process.env.MAIL_USER,
                 pass: process.env.MAIL_PASSWORD,
@@ -41,12 +40,11 @@ import { createTransport } from 'nodemailer';
           // Use Nodemailer in development environment
           return {
             transport: {
-              host: process.env.MAIL_HOST,
-              port: +process.env.MAIL_PORT,
-              secure: false,
+              host: process.env.MAIL_HOST || 'localhost',
+              port: +process.env.MAIL_PORT || 25, 
             },
             defaults: {
-              from: '"No Reply" <${process.env.MAIL_FROM}>',
+              from: '"No Reply" <noreply@example.com>',
             },
             template: {
               dir: join(__dirname, 'templates'),
