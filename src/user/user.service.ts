@@ -123,9 +123,10 @@ export class UserService {
 
   async update(id: number, updateUserDto: UpdateUserDto, user) {
     const getUser = await this.findOne(id);
-
-    if(getUser.id !== user.id){
-      if (!getUser) {
+    
+    if (getUser) {
+      
+      if(getUser.id !== user.id){
         throw new NotFoundException(`Impossible de trouver l'utilisateur #${id}.`);
       }
 
@@ -135,7 +136,7 @@ export class UserService {
 
       return userUpdate;
     }else{
-      throw new NotFoundException(`Impossible de modifier votre compte.`);
+      throw new NotFoundException(`Impossible de trouver l'utilisateur #${id}.`);
     }
 
   }
