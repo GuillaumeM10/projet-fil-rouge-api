@@ -6,6 +6,7 @@ import { PostCreateDto } from './dto/post-create.dto';
 import { PostUpdateDto } from './dto/post-update.dto';
 import { PostEntity } from './entity/post.entity';
 import { CityService } from 'src/city/city.service';
+import { SkillService } from 'src/skill/skill.service';
 
 @Injectable()
 export class PostService {
@@ -14,10 +15,11 @@ export class PostService {
         private readonly postRepository: Repository<PostEntity>,
         private readonly uploadFileService: UploadFileService,
         private readonly CityService: CityService,
+        private readonly SkillService: SkillService,
     ) {}
 
     async getAllPosts(queries) {
-        let { page, limit, author, search } = queries;
+        let { page, limit, author, search, cities, skills } = queries;
         
         limit = limit ? +limit : 10;
         page = page ? +page : 1;
@@ -42,10 +44,6 @@ export class PostService {
                 'personalpicture.id', 'personalpicture.Location'
             ])
             
-        // if(categories !== undefined) {
-        //     query
-        //         .where('categories.name IN (:...categories)', { categories: categories.split(',') })
-        // }
 
         if(search !== undefined) {
             query
@@ -57,6 +55,42 @@ export class PostService {
         if(author !== undefined) {
             query
                 .where('author.id = :author', { author })
+        }
+
+        if(cities !== undefined) {  
+            let citiesArray = cities.split(',');
+            await Promise.all(citiesArray.map(async (city, index) => {
+                if(city === ''){
+                    citiesArray.splice(index, 1);
+                    return;
+                };
+                const cityData = await this.CityService.findAll({name: city});
+
+                if(cityData[0]?.name === city){
+                    const id = cityData[0].id;
+                    citiesArray[index] = id
+                }
+            }));
+            query
+                .andWhere('cities.id IN (:...cities)', { cities: citiesArray })
+        }
+
+        if(skills !== undefined) {
+            let skillsArray = skills.split(',');
+            await Promise.all(skillsArray.map(async (skill, index) => {
+                if(skill === ''){
+                    skillsArray.splice(index, 1);
+                    return;
+                };
+                const skillData = await this.SkillService.getAll({name: skill});
+                
+                if(skillData[0]?.name === skill){
+                    const id = skillData[0].id;
+                    skillsArray[index] = id;
+                }
+            }));
+            query
+                .andWhere('skills.id IN (:...skills)', { skills: skillsArray })
         }
 
         const postList = await query
