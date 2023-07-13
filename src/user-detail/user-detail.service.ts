@@ -71,6 +71,19 @@ export class UserDetailService {
   async update(id: number, updateUserDetailDto: UpdateUserDetailDto, user, files) {  
     const userDetail = await this.userDetailRepository.findOneBy({id});
 
+    if(updateUserDetailDto.personalPicture === "null"){
+      updateUserDetailDto.personalPicture = null;
+    }
+    if(updateUserDetailDto.cv === "null"){
+      updateUserDetailDto.cv = null;
+    }
+    if(updateUserDetailDto.banner === "null"){
+      updateUserDetailDto.banner = null;
+    }
+    if(updateUserDetailDto.files === "null"){
+      updateUserDetailDto.files = null;
+    }
+
     if(updateUserDetailDto.displayedOnFeed === "true"){
       updateUserDetailDto.displayedOnFeed = true;
     }else if(updateUserDetailDto.displayedOnFeed === "false"){
