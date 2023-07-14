@@ -10,4 +10,5 @@ export class PostCreateDto {
   author?: UserEntity;
   uploadFiles?: any[];
   cities?: any;
+  skills?: any;
 }

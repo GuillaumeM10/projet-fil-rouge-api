@@ -38,7 +38,7 @@ export class PostService {
                 'comments.id', 'comments.content', 'comments.user', 'comments.createdAt', 'comments.updatedAt',
                 'skills.id', 'skills.name',
                 'cities.id', 'cities.name',
-                'uploadFiles.Location',
+                'uploadFiles.id', 'uploadFiles.Location',
                 'author.id', 'author.email', 'author.firstName', 'author.lastName',
                 'userdetail.id', 'userdetail.profilComplet', 'userdetail.displayedOnFeed',
                 'personalpicture.id', 'personalpicture.Location'
@@ -120,7 +120,7 @@ export class PostService {
                     'comments.id', 'comments.content', 'comments.user', 'comments.createdAt', 'comments.updatedAt',
                     'skills.id', 'skills.name',
                     'cities.id', 'cities.name',
-                    'uploadFiles.Location',
+                    'uploadFiles.id', 'uploadFiles.Location',
                     'author.id', 'author.email', 'author.firstName', 'author.lastName',
                     'userdetail.id', 'userdetail.profilComplet', 'userdetail.displayedOnFeed',
                     'personalpicture.id', 'personalpicture.Location'
@@ -140,21 +140,18 @@ export class PostService {
     
     async createPost(data: PostCreateDto, user, files) {
         if (files !== undefined) {
-            let filesData = await Promise.all(files.map(async file => {
+            const filesData = await Promise.all(files.map(async file => {
                 const uploadFile = await this.uploadFileService.create(file, user);
                 return uploadFile;
             }));
         
-            // console.log('filesData', filesData);
             data.uploadFiles = filesData;
         }
 
         if(data.cities){
-            let cities = data.cities
-            if(typeof data.cities !== 'object') {
-                cities = JSON.parse(data.cities);
-                data.cities = cities;
-            }
+            
+            let cities = typeof data.cities === 'string' ? JSON.parse(data.cities) : data.cities;
+            data.cities = cities;
 
             await Promise.all(cities.map(async (city, index) => {
                 const cityData = await this.CityService.findAll({name: city.name});
@@ -165,11 +162,26 @@ export class PostService {
                 }
             }));
         }
+
+        if(data.skills){
+            let skills = typeof data.skills === 'string' ? JSON.parse(data.skills) : data.skills;
+            data.skills = skills;
+
+            await Promise.all(skills.map(async (skill, index) => {
+                const cityData = await this.SkillService.getAll({name: skill.name});
+            
+                if(cityData[0]?.name === skill.name){
+                    const id = cityData[0].id;
+                    data.cities[index] = {"id": id};
+                }
+            }));
+        }
         
         try {
             data.userId = +user.id;
             data.author = user;
-            return await this.postRepository.save(data);
+            const newPost = await this.postRepository.save(data);
+            return newPost
         } catch (error) {
 
             console.log(error);
