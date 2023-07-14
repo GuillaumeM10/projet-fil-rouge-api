@@ -207,15 +207,30 @@ export class PostService {
         }
 
         if(data.cities){
-            let cities = JSON.parse(data.cities);
-            data.cities = cities;
+            
+            let cities = typeof data.cities === 'string' ? JSON.parse(data.cities) : data.cities;
+            postUpdate.cities = cities;
 
             await Promise.all(cities.map(async (city, index) => {
                 const cityData = await this.CityService.findAll({name: city.name});
             
                 if(cityData[0]?.name === city.name){
                     const id = cityData[0].id;
-                    data.cities[index] = {"id": id};
+                    postUpdate.cities[index] = {"id": id};
+                }
+            }));
+        }
+
+        if(data.skills){
+            let skills = typeof data.skills === 'string' ? JSON.parse(data.skills) : data.skills;
+            postUpdate.skills = skills;
+
+            await Promise.all(skills.map(async (skill, index) => {
+                const cityData = await this.SkillService.getAll({name: skill.name});
+            
+                if(cityData[0]?.name === skill.name){
+                    const id = cityData[0].id;
+                    postUpdate.cities[index] = {"id": id};
                 }
             }));
         }
