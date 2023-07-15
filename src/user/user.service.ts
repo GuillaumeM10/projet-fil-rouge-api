@@ -93,6 +93,7 @@ export class UserService {
                     .leftJoinAndSelect('userDetail.cv', 'cv')
                     .leftJoinAndSelect('userDetail.personalPicture', 'personalPicture')
                     .leftJoinAndSelect('userDetail.banner', 'banner') 
+                    .leftJoinAndSelect('links.linkCategory', 'linkCategory')
                     .leftJoinAndSelect('user.comments', 'comments')
                     .leftJoinAndSelect('user.replies', 'replies')
                     .leftJoinAndSelect('user.posts', 'posts')
