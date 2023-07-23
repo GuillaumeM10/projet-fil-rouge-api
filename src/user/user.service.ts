@@ -124,7 +124,6 @@ export class UserService {
 
   async update(id: number, updateUserDto: UpdateUserDto, user) {
     const getUser = await this.findOne(id);
-    console.log(user);
     
     if (getUser) {
       
@@ -154,8 +153,6 @@ export class UserService {
 
     const userUpdate = { ...user, ...updateUserDto };
     userUpdate.password = bcrypt.hashSync(password, salt)
-    console.log(userUpdate.password);
-    
 
     await this.userRepository.save(userUpdate);
 

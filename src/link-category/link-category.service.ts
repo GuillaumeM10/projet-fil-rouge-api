@@ -16,8 +16,6 @@ export class LinkCategoryService {
     try{
 
       if(user.role === 'admin') {
-        console.log(user.role);
-        
         return await this.linkCategoryRepository.save(createLinkCategoryDto)
       }else{
         return {message: 'You are not authorized to perform this action'};
