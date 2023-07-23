@@ -32,7 +32,7 @@ export class MailService {
     try{
       console.log(createTokenResetPasswordDto.email);
       
-      await this.mailerService.sendMail({
+      const mail = await this.mailerService.sendMail({
         to: createTokenResetPasswordDto.email,
         subject: 'STYDYJob : Mail de changement de mot de passe',
         template: './reset-password',
@@ -41,10 +41,11 @@ export class MailService {
         },
       });
       
-    
+      console.log(mail);
+      
     }catch(err){
       console.log(err)
-      
+
       throw new ConflictException(`Le mail n'a pas pu être envoyé à ${createTokenResetPasswordDto.email}`);
     }
   }
