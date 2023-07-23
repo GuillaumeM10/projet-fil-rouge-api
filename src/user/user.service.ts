@@ -124,15 +124,18 @@ export class UserService {
 
   async update(id: number, updateUserDto: UpdateUserDto, user) {
     const getUser = await this.findOne(id);
+    console.log(user);
     
     if (getUser) {
       
       if(getUser.id !== user.id){
         throw new NotFoundException(`Impossible de trouver l'utilisateur #${id}.`);
       }
-
+      
       const userUpdate = { ...getUser, ...updateUserDto };
 
+      userUpdate.password = getUser.password;
+      
       await this.userRepository.save(userUpdate);
 
       return userUpdate;
