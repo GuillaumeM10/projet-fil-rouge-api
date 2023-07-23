@@ -30,9 +30,7 @@ export class MailService {
     const url = `${process.env.FRONT_URL}/reset-password/${token}`;
 
     try{
-      console.log(createTokenResetPasswordDto.email);
-      
-      const mail = await this.mailerService.sendMail({
+      await this.mailerService.sendMail({
         to: createTokenResetPasswordDto.email,
         subject: 'STYDYJob : Mail de changement de mot de passe',
         template: './reset-password',
@@ -40,9 +38,6 @@ export class MailService {
           url
         },
       });
-      
-      console.log(mail);
-      
     }catch(err){
       console.log(err)
 
