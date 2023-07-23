@@ -34,7 +34,8 @@ export class MailService {
     const url = `${process.env.FRONT_URL}/reset-password/${token}`;
 
     try{
-
+      console.log(createTokenResetPasswordDto.email);
+      
       await this.mailerService.sendMail({
         to: createTokenResetPasswordDto.email,
         // from: '"Support Team" <

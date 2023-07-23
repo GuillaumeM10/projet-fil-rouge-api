@@ -151,6 +151,8 @@ export class UserService {
 
     const userUpdate = { ...user, ...updateUserDto };
     userUpdate.password = bcrypt.hashSync(password, salt)
+    console.log(userUpdate.password);
+    
 
     await this.userRepository.save(userUpdate);
 
